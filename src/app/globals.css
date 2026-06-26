@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+	--background: #f5efe4;
+	--foreground: #07111f;
+	--night: #07111f;
+	--ivory: #f5efe4;
+	--accent: #c96f2d;
+	--font-body: Arial, Helvetica, sans-serif;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-night: var(--night);
+	--color-ivory: var(--ivory);
+	--color-accent: var(--accent);
+	--font-sans: var(--font-body);
+}
+
+body {
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-body);
+}
+
+::selection {
+	background: var(--accent);
+	color: var(--night);
+}
