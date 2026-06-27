@@ -10,6 +10,7 @@ import {
 	resetSportOccurrenceAction,
 	skipSportOccurrenceAction,
 } from "@/app/app/sport/semaine-actuelle/actions";
+import { RestTimer } from "@/components/sport/rest-timer";
 import { MEASUREMENT_OPTIONS, PERCEIVED_EFFORT_LABELS, SPORT_OCCURRENCE_STATUS_LABELS } from "@/lib/sport/constants";
 import { formatSportResult, formatSportTarget } from "@/lib/sport/format";
 import { initialSportActionState } from "@/lib/sport/state";
@@ -125,7 +126,7 @@ function CreateOccurrenceForm({ onMessage, weekDays }: { onMessage: (state: Spor
 	}, [onMessage, router, state]);
 
 	return (
-		<aside className="h-fit rounded-lg border border-ivory/15 bg-ivory p-5 text-night lg:sticky lg:top-8">
+		<aside className="h-fit rounded-lg border border-ivory/15 bg-ivory p-5 text-night">
 			<h2 className="text-xl font-semibold">Ajouter une activité ponctuelle</h2>
 			<p className="mt-3 text-sm leading-6 text-night/62">Cette activité sera ajoutée seulement à cette semaine. Elle ne modifiera pas votre semaine type.</p>
 			<form ref={formRef} action={formAction} className="mt-5 space-y-5">
@@ -256,6 +257,63 @@ function EffortSelect({ defaultValue = "", id }: { defaultValue?: PerceivedEffor
 	);
 }
 
+function RepetitionResultInput({
+	defaultValue,
+	id,
+}: {
+	defaultValue: number | null;
+	id: string;
+}) {
+	const [value, setValue] = useState(defaultValue === null ? "" : String(defaultValue));
+
+	function adjust(delta: number) {
+		setValue((current) => {
+			const parsed = Number.parseInt(current, 10);
+			const baseValue = Number.isFinite(parsed) ? parsed : 1;
+
+			return String(Math.max(1, baseValue + delta));
+		});
+	}
+
+	return (
+		<div className="space-y-3">
+			<label className="block text-sm font-medium text-night" htmlFor={id}>
+				<span>Réalisé</span>
+				<input
+					id={id}
+					name="actual_value"
+					type="number"
+					min="1"
+					step="1"
+					required
+					value={value}
+					onChange={(event) => setValue(event.target.value)}
+					className="mt-2 h-11 w-full rounded-md border border-night/18 bg-white px-3 text-sm text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+				/>
+			</label>
+			<div>
+				<p className="text-xs font-semibold uppercase tracking-[0.16em] text-night/44">Compteur rapide</p>
+				<div className="mt-2 flex gap-2">
+					<button
+						type="button"
+						onClick={() => adjust(-1)}
+						className="flex h-10 w-10 items-center justify-center rounded-md border border-night/15 text-lg font-semibold text-night/72 transition hover:border-accent hover:text-accent"
+					>
+						-
+					</button>
+					<button
+						type="button"
+						onClick={() => adjust(1)}
+						className="flex h-10 w-10 items-center justify-center rounded-md border border-night/15 text-lg font-semibold text-night/72 transition hover:border-accent hover:text-accent"
+					>
+						+
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 function CompleteOccurrenceForm({
 	occurrence,
 	onClose,
@@ -289,7 +347,11 @@ function CompleteOccurrenceForm({
 				<p className="mt-1 text-sm text-night/62">{formatSportTarget(occurrence)}</p>
 			</div>
 
-			{occurrence.measurement_type === "repetitions" || occurrence.measurement_type === "duration_minutes" || occurrence.measurement_type === "distance_km" ? (
+			{occurrence.measurement_type === "repetitions" ? (
+				<RepetitionResultInput defaultValue={occurrence.actual_value ?? occurrence.target_value} id={`actual-value-${occurrence.id}`} />
+			) : null}
+
+			{occurrence.measurement_type === "duration_minutes" || occurrence.measurement_type === "distance_km" ? (
 				<label className="block text-sm font-medium text-night" htmlFor={`actual-value-${occurrence.id}`}>
 					<span>Réalisé</span>
 					<input
@@ -548,70 +610,77 @@ export function CurrentWeekManager({
 				</p>
 			) : null}
 
-			{!hasTemplates && !hasOccurrences ? (
-				<div className="rounded-lg border border-ivory/15 bg-ivory p-6 text-night">
-					<h2 className="text-2xl font-semibold">Créez d&apos;abord votre semaine type.</h2>
-					<p className="mt-3 max-w-2xl text-sm leading-6 text-night/64">
-						La semaine actuelle se construit à partir de vos activités habituelles.
-					</p>
-					<a href="/app/sport/semaine-type" className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]">
-						Aller à la semaine type
-					</a>
-				</div>
-			) : null}
-
-			{hasTemplates && !hasOccurrences ? (
-				<div className="rounded-lg border border-ivory/15 bg-ivory p-6 text-night">
-					<h2 className="text-2xl font-semibold">Aucune activité générée cette semaine.</h2>
-					<p className="mt-3 max-w-2xl text-sm leading-6 text-night/64">
-						Générez votre semaine actuelle depuis votre semaine type. Les résultats que vous indiquerez ensuite resteront propres à cette semaine.
-					</p>
-					<div className="mt-5">
-						<GenerateWeekForm onMessage={handleMessage} variant="primary" />
-					</div>
-				</div>
-			) : null}
-
-			{hasOccurrences ? (
-				<>
-					<div className="flex flex-col gap-4 rounded-lg border border-ivory/15 bg-ivory p-5 text-night sm:flex-row sm:items-center sm:justify-between">
-						<div>
-							<p className="text-lg font-semibold">Activités de la semaine</p>
-							<p className="mt-1 text-sm leading-6 text-night/64">
-								Du {weekStartLabel} au {weekEndLabel}.
+			<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+				<div className="order-2 space-y-5 lg:order-1">
+					{!hasTemplates && !hasOccurrences ? (
+						<div className="rounded-lg border border-ivory/15 bg-ivory p-6 text-night">
+							<h2 className="text-2xl font-semibold">Créez d&apos;abord votre semaine type.</h2>
+							<p className="mt-3 max-w-2xl text-sm leading-6 text-night/64">
+								La semaine actuelle se construit à partir de vos activités habituelles.
 							</p>
+							<a href="/app/sport/semaine-type" className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]">
+								Aller à la semaine type
+							</a>
 						</div>
-						<GenerateWeekForm onMessage={handleMessage} variant="secondary" />
-					</div>
+					) : null}
 
-					<div className="grid gap-4">
-						{weekDays.map((day) => {
-							const dayOccurrences = occurrencesByDate.get(day.dateKey) ?? [];
+					{hasTemplates && !hasOccurrences ? (
+						<div className="rounded-lg border border-ivory/15 bg-ivory p-6 text-night">
+							<h2 className="text-2xl font-semibold">Aucune activité générée cette semaine.</h2>
+							<p className="mt-3 max-w-2xl text-sm leading-6 text-night/64">
+								Générez votre semaine actuelle depuis votre semaine type. Les résultats que vous indiquerez ensuite resteront propres à cette semaine.
+							</p>
+							<div className="mt-5">
+								<GenerateWeekForm onMessage={handleMessage} variant="primary" />
+							</div>
+						</div>
+					) : null}
 
-							return (
-								<section key={day.dateKey} className="rounded-lg border border-ivory/15 bg-ivory p-5 text-night">
-									<div className="flex flex-col gap-1 border-b border-night/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
-										<h2 className="text-xl font-semibold">{day.label}</h2>
-										<p className="text-sm text-night/56">{day.dateLabel}</p>
-									</div>
+					{hasOccurrences ? (
+						<>
+							<div className="flex flex-col gap-4 rounded-lg border border-ivory/15 bg-ivory p-5 text-night sm:flex-row sm:items-center sm:justify-between">
+								<div>
+									<p className="text-lg font-semibold">Activités de la semaine</p>
+									<p className="mt-1 text-sm leading-6 text-night/64">
+										Du {weekStartLabel} au {weekEndLabel}.
+									</p>
+								</div>
+								<GenerateWeekForm onMessage={handleMessage} variant="secondary" />
+							</div>
 
-									{dayOccurrences.length ? (
-										<ul className="divide-y divide-night/10">
-											{dayOccurrences.map((occurrence) => (
-												<OccurrenceItem key={occurrence.id} occurrence={occurrence} onMessage={handleMessage} />
-											))}
-										</ul>
-									) : (
-										<p className="py-5 text-sm text-night/56">Aucune activité prévue.</p>
-									)}
-								</section>
-							);
-						})}
-					</div>
-				</>
-			) : null}
+							<div className="grid gap-4">
+								{weekDays.map((day) => {
+									const dayOccurrences = occurrencesByDate.get(day.dateKey) ?? [];
 
-			{hasTemplates || hasOccurrences ? <CreateOccurrenceForm onMessage={handleMessage} weekDays={weekDays} /> : null}
+									return (
+										<section key={day.dateKey} className="rounded-lg border border-ivory/15 bg-ivory p-5 text-night">
+											<div className="flex flex-col gap-1 border-b border-night/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
+												<h2 className="text-xl font-semibold">{day.label}</h2>
+												<p className="text-sm text-night/56">{day.dateLabel}</p>
+											</div>
+
+											{dayOccurrences.length ? (
+												<ul className="divide-y divide-night/10">
+													{dayOccurrences.map((occurrence) => (
+														<OccurrenceItem key={occurrence.id} occurrence={occurrence} onMessage={handleMessage} />
+													))}
+												</ul>
+											) : (
+												<p className="py-5 text-sm text-night/56">Aucune activité prévue.</p>
+											)}
+										</section>
+									);
+								})}
+							</div>
+						</>
+					) : null}
+				</div>
+
+				<div className="order-1 space-y-5 lg:order-2 lg:sticky lg:top-8">
+					<RestTimer />
+					{hasTemplates || hasOccurrences ? <CreateOccurrenceForm onMessage={handleMessage} weekDays={weekDays} /> : null}
+				</div>
+			</div>
 		</div>
 	);
 }
