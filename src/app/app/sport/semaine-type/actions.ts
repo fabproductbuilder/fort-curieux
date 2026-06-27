@@ -59,8 +59,8 @@ export async function createSportTemplateAction(_state: SportTemplateFormState, 
 		return failure("L'activité n'a pas pu être créée. Vérifiez les champs puis réessayez.");
 	}
 
-	revalidatePath("/app/corps/semaine-type");
-	revalidatePath("/app/corps");
+	revalidatePath("/app/sport/semaine-type");
+	revalidatePath("/app/sport");
 
 	return success("Activité ajoutée à votre semaine type.");
 }
@@ -95,8 +95,8 @@ export async function updateSportTemplateAction(_state: SportTemplateFormState, 
 		return failure("L'activité n'a pas pu être modifiée. Vérifiez les champs puis réessayez.");
 	}
 
-	revalidatePath("/app/corps/semaine-type");
-	revalidatePath("/app/corps");
+	revalidatePath("/app/sport/semaine-type");
+	revalidatePath("/app/sport");
 
 	return success("Activité mise à jour.");
 }
@@ -118,6 +118,6 @@ export async function archiveSportTemplateAction(formData: FormData): Promise<vo
 		.eq("user_id", userId)
 		.eq("is_active", true);
 
-	revalidatePath("/app/corps/semaine-type");
-	revalidatePath("/app/corps");
+	revalidatePath("/app/sport/semaine-type");
+	revalidatePath("/app/sport");
 }

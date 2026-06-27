@@ -1,6 +1,6 @@
 const pillars = [
 	{
-		title: "Corps",
+		title: "Sport",
 		description: "Un espace en préparation pour composer son planning sportif, définir ses objectifs et noter ses résultats.",
 	},
 	{

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { archiveSportTemplateAction, createSportTemplateAction, updateSportTemplateAction } from "@/app/app/corps/semaine-type/actions";
+import { archiveSportTemplateAction, createSportTemplateAction, updateSportTemplateAction } from "@/app/app/sport/semaine-type/actions";
 import { MEASUREMENT_OPTIONS, WEEK_DAYS } from "@/lib/sport/constants";
 import { formatSportTarget } from "@/lib/sport/format";
 import { initialSportTemplateFormState } from "@/lib/sport/state";
@@ -163,14 +163,14 @@ function ArchiveTemplateForm({ template }: { template: SportTemplate }) {
 		<form
 			action={archiveSportTemplateAction}
 			onSubmit={(event) => {
-				if (!window.confirm(`Archiver "${template.name}" ?`)) {
+				if (!window.confirm("Supprimer cette activité de votre semaine type ? Elle ne sera plus proposée dans les prochaines semaines. Les semaines déjà générées ne sont pas modifiées.")) {
 					event.preventDefault();
 				}
 			}}
 		>
 			<input type="hidden" name="id" value={template.id} />
 			<button type="submit" className="h-10 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent">
-				Archiver
+				Supprimer
 			</button>
 		</form>
 	);

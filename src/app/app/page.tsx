@@ -28,10 +28,18 @@ export default async function AppPage() {
 				<div className="py-8">
 					<h1 className="text-4xl font-semibold sm:text-5xl">Votre espace est prêt.</h1>
 					<div className="mt-10 grid gap-4 sm:grid-cols-2">
-						<Link href="/app/corps" className="rounded-lg border border-ivory/20 bg-ivory p-5 text-night transition hover:border-accent hover:shadow-[0_18px_60px_rgba(0,0,0,0.2)]">
-							<span className="text-2xl font-semibold">Corps</span>
-							<span className="mt-4 block text-sm leading-6 text-night/64">Gérer votre semaine type sportive.</span>
-						</Link>
+						<div className="rounded-lg border border-ivory/20 bg-ivory p-5 text-night">
+							<p className="text-2xl font-semibold">Sport</p>
+							<p className="mt-4 text-sm leading-6 text-night/64">Organiser votre semaine sportive et consulter ce qui est prévu maintenant.</p>
+							<div className="mt-5 flex flex-wrap gap-3">
+								<Link href="/app/sport" className="text-sm font-semibold text-night underline-offset-4 hover:underline">
+									Accueil Sport
+								</Link>
+								<Link href="/app/sport/semaine-actuelle" className="text-sm font-semibold text-night underline-offset-4 hover:underline">
+									Semaine actuelle
+								</Link>
+							</div>
+						</div>
 						<div className="rounded-lg border border-ivory/15 p-5 text-ivory/54">
 							<p className="text-2xl font-semibold text-ivory/72">Culture</p>
 							<p className="mt-4 text-sm leading-6">Bientôt</p>

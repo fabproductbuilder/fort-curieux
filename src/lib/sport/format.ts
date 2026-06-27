@@ -1,4 +1,4 @@
-import type { SportTemplate } from "@/types/sport";
+import type { SportOccurrence, SportTemplate } from "@/types/sport";
 
 function formatNumber(value: number): string {
 	return Number.isInteger(value) ? String(value) : String(value).replace(".", ",");
@@ -21,5 +21,29 @@ export function formatSportTarget(template: Pick<SportTemplate, "measurement_typ
 		return `${template.target_sets} × ${template.target_reps}`;
 	}
 
-	return "à valider";
+	return "Activité libre";
+}
+
+export function formatSportResult(occurrence: Pick<SportOccurrence, "measurement_type" | "actual_value" | "actual_sets" | "actual_reps">): string | null {
+	if (occurrence.measurement_type === "repetitions" && occurrence.actual_value !== null) {
+		return `${formatNumber(occurrence.actual_value)} répétitions`;
+	}
+
+	if (occurrence.measurement_type === "duration_minutes" && occurrence.actual_value !== null) {
+		return `${formatNumber(occurrence.actual_value)} min`;
+	}
+
+	if (occurrence.measurement_type === "distance_km" && occurrence.actual_value !== null) {
+		return `${formatNumber(occurrence.actual_value)} km`;
+	}
+
+	if (occurrence.measurement_type === "sets_reps" && occurrence.actual_sets !== null && occurrence.actual_reps !== null) {
+		return `${occurrence.actual_sets} × ${occurrence.actual_reps}`;
+	}
+
+	if (occurrence.measurement_type === "completion") {
+		return "activité effectuée";
+	}
+
+	return null;
 }

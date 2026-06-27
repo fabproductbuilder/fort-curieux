@@ -1,6 +1,6 @@
-# Schéma initial Corps
+# Schéma initial Sport
 
-Cette première migration prépare les fondations du module Corps sans ajouter de logique applicative automatique en base.
+Cette première migration prépare les fondations du module Sport sans ajouter de logique applicative automatique en base.
 
 ## Tables
 

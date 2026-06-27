@@ -43,13 +43,18 @@ export default async function SemaineTypePage() {
 			<section className="mx-auto flex w-full max-w-7xl flex-col gap-10">
 				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<Link href="/app/corps" className="text-lg font-semibold underline-offset-4 hover:underline">
+						<Link href="/app" className="text-lg font-semibold underline-offset-4 hover:underline">
 							Fort Curieux
 						</Link>
-						<p className="mt-2 text-sm text-ivory/58">Corps · Semaine type</p>
+						<p className="mt-2 text-sm text-ivory/58">
+							<Link href="/app/sport" className="underline-offset-4 hover:underline">
+								Sport
+							</Link>{" "}
+							· Semaine type
+						</p>
 					</div>
 					<Link href="/app" className="inline-flex h-11 items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent">
-						Espace
+						Mon espace
 					</Link>
 				</header>
 

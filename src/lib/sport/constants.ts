@@ -1,4 +1,4 @@
-import type { MeasurementType } from "@/types/sport";
+import type { MeasurementType, PerceivedEffort, SportOccurrenceStatus } from "@/types/sport";
 
 export const WEEK_DAYS = [
 	{ value: 1, label: "Lundi" },
@@ -15,7 +15,7 @@ export const MEASUREMENT_OPTIONS: Array<{ value: MeasurementType; label: string 
 	{ value: "duration_minutes", label: "Durée en minutes" },
 	{ value: "distance_km", label: "Distance en kilomètres" },
 	{ value: "sets_reps", label: "Séries × répétitions" },
-	{ value: "completion", label: "Simple validation" },
+	{ value: "completion", label: "Activité libre" },
 ];
 
 export const MEASUREMENT_LABELS: Record<MeasurementType, string> = {
@@ -23,5 +23,18 @@ export const MEASUREMENT_LABELS: Record<MeasurementType, string> = {
 	duration_minutes: "Durée en minutes",
 	distance_km: "Distance en kilomètres",
 	sets_reps: "Séries × répétitions",
-	completion: "Simple validation",
+	completion: "Activité libre",
+};
+
+export const SPORT_OCCURRENCE_STATUS_LABELS: Record<SportOccurrenceStatus, string> = {
+	planned: "Prévue",
+	completed: "Terminée",
+	skipped: "Non réalisée",
+	cancelled: "Annulée",
+};
+
+export const PERCEIVED_EFFORT_LABELS: Record<PerceivedEffort, string> = {
+	easy: "Facile",
+	normal: "Normal",
+	hard: "Difficile",
 };
