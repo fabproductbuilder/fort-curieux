@@ -1,28 +1,61 @@
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+
 const pillars = [
 	{
 		title: "Sport",
-		description: "Un espace en préparation pour composer son planning sportif, définir ses objectifs et noter ses résultats.",
+		description: "Composez votre semaine type, préparez votre semaine actuelle et notez ce que vous avez réellement fait.",
 	},
 	{
 		title: "Culture",
-		description: "Des sessions courtes en préparation autour de repères solides en histoire, sciences, géographie et musique.",
+		description: "Entretenez vos repères en histoire, géographie, sciences et musique grâce à des sessions courtes et régulières.",
 	},
 ];
 
-export default function Home() {
+export default async function Home() {
+	const supabase = await createClient();
+	const { data, error } = await supabase.auth.getClaims();
+	const isAuthenticated = !error && Boolean(data?.claims.sub);
+
 	return (
 		<main className="min-h-screen bg-night text-ivory">
 			<section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-between px-6 py-8 sm:px-10 lg:px-16">
-				<header className="flex items-center justify-between border-b border-ivory/15 pb-5">
+				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
 					<p className="text-lg font-semibold">Fort Curieux</p>
-					<p className="text-xs font-semibold uppercase text-accent tracking-[0.26em]">V1</p>
+					<nav className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center" aria-label="Accès au compte">
+						{isAuthenticated ? (
+							<Link
+								href="/app"
+								className="inline-flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto"
+							>
+								Mon espace
+							</Link>
+						) : (
+							<>
+								<Link
+									href="/connexion"
+									className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto"
+								>
+									Se connecter
+								</Link>
+								<Link
+									href="/inscription"
+									className="inline-flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto"
+								>
+									Créer un compte
+								</Link>
+							</>
+						)}
+					</nav>
 				</header>
 
 				<div className="py-16 sm:py-24">
-					<p className="mb-5 text-sm font-semibold uppercase text-accent tracking-[0.22em]">Fondation en cours</p>
 					<h1 className="max-w-3xl text-5xl font-semibold leading-tight sm:text-6xl">Fort Curieux</h1>
 					<p className="mt-6 max-w-2xl text-xl leading-8 text-ivory/78 sm:text-2xl">
 						Entraînez votre corps. Entretenez votre culture.
+					</p>
+					<p className="mt-6 max-w-2xl text-base leading-7 text-ivory/66 sm:text-lg sm:leading-8">
+						Une web app personnelle pour suivre vos activités sportives et entretenir vos repères culturels avec régularité.
 					</p>
 				</div>
 

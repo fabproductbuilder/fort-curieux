@@ -39,28 +39,28 @@ export default async function SemaineTypePage() {
 	const templates = error ? [] : ((data ?? []) as SportTemplateRow[]).map(normalizeTemplate);
 
 	return (
-		<main className="min-h-screen bg-night px-6 py-8 text-ivory sm:px-10 lg:px-16">
-			<section className="mx-auto flex w-full max-w-7xl flex-col gap-10">
+		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">
+			<section className="mx-auto flex w-full max-w-7xl flex-col gap-8 sm:gap-10">
 				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<Link href="/app" className="text-lg font-semibold underline-offset-4 hover:underline">
+						<Link href="/app" className="inline-flex min-h-9 items-center text-lg font-semibold underline-offset-4 hover:underline">
 							Fort Curieux
 						</Link>
 						<p className="mt-2 text-sm text-ivory/58">
-							<Link href="/app/sport" className="underline-offset-4 hover:underline">
+							<Link href="/app/sport" className="inline-flex min-h-8 items-center underline-offset-4 hover:underline">
 								Sport
 							</Link>{" "}
 							· Semaine type
 						</p>
 					</div>
-					<Link href="/app" className="inline-flex h-11 items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent">
+					<Link href="/app" className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto">
 						Mon espace
 					</Link>
 				</header>
 
 				<div className="max-w-3xl">
-					<h1 className="text-4xl font-semibold sm:text-5xl">Semaine type</h1>
-					<p className="mt-5 text-lg leading-8 text-ivory/72">Organisez vos activités sportives personnelles par jour.</p>
+					<h1 className="text-3xl font-semibold sm:text-5xl">Semaine type</h1>
+					<p className="mt-4 text-base leading-7 text-ivory/72 sm:mt-5 sm:text-lg sm:leading-8">Organisez vos activités sportives personnelles par jour.</p>
 				</div>
 
 				<SportTemplateManager templates={templates} loadError={error ? "Impossible de charger votre semaine type pour le moment." : undefined} />

@@ -82,8 +82,8 @@ function GenerateWeekForm({
 	const [state, formAction, isPending] = useActionState(generateCurrentWeekOccurrencesAction, initialSportActionState);
 	const className =
 		variant === "primary"
-			? "inline-flex h-11 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
-			: "inline-flex h-11 items-center justify-center rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-70";
+			? "inline-flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+			: "inline-flex h-11 w-full items-center justify-center rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto";
 
 	useEffect(() => {
 		if (!state.message) {
@@ -106,7 +106,15 @@ function GenerateWeekForm({
 	);
 }
 
-function CreateOccurrenceForm({ onMessage, weekDays }: { onMessage: (state: SportActionState) => void; weekDays: CurrentWeekDay[] }) {
+function CreateOccurrenceFormPanel({
+	onClose,
+	onMessage,
+	weekDays,
+}: {
+	onClose: () => void;
+	onMessage: (state: SportActionState) => void;
+	weekDays: CurrentWeekDay[];
+}) {
 	const router = useRouter();
 	const formRef = useRef<HTMLFormElement>(null);
 	const [state, formAction, isPending] = useActionState(createSportOccurrenceAction, initialSportActionState);
@@ -121,14 +129,15 @@ function CreateOccurrenceForm({ onMessage, weekDays }: { onMessage: (state: Spor
 
 		if (state.status === "success") {
 			formRef.current?.reset();
+			onClose();
 			router.refresh();
 		}
-	}, [onMessage, router, state]);
+	}, [onClose, onMessage, router, state]);
 
 	return (
-		<aside className="h-fit rounded-lg border border-ivory/15 bg-ivory p-5 text-night">
-			<h2 className="text-xl font-semibold">Ajouter une activité ponctuelle</h2>
-			<p className="mt-3 text-sm leading-6 text-night/62">Cette activité sera ajoutée seulement à cette semaine. Elle ne modifiera pas votre semaine type.</p>
+		<aside className="h-fit rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-5">
+			<h2 className="text-lg font-semibold sm:text-xl">Ajouter une activité ponctuelle</h2>
+			<p className="mt-3 text-sm leading-6 text-night/62">Ajoutez une activité seulement pour cette semaine.</p>
 			<form ref={formRef} action={formAction} className="mt-5 space-y-5">
 				<label className="block text-sm font-medium text-night" htmlFor="occurrence-name-new">
 					<span>Nom de l&apos;activité</span>
@@ -223,15 +232,41 @@ function CreateOccurrenceForm({ onMessage, weekDays }: { onMessage: (state: Spor
 				{measurementType === "completion" ? <p className="text-sm leading-6 text-night/62">Aucun objectif chiffré : vous confirmerez simplement que l&apos;activité a été effectuée.</p> : null}
 
 				<ActionFeedback state={state} />
-				<button
-					type="submit"
-					disabled={isPending}
-					className="flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
-					aria-disabled={isPending}
-				>
-					{isPending ? "Ajout..." : "Ajouter à cette semaine"}
-				</button>
+				<div className="grid gap-3 sm:flex sm:flex-wrap">
+					<button
+						type="submit"
+						disabled={isPending}
+						className="flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70 sm:h-11 sm:w-auto"
+						aria-disabled={isPending}
+					>
+						{isPending ? "Ajout..." : "Ajouter à cette semaine"}
+					</button>
+					<button
+						type="button"
+						onClick={onClose}
+						className="h-12 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:h-11"
+					>
+						Fermer
+					</button>
+				</div>
 			</form>
+		</aside>
+	);
+}
+
+function CreateOccurrenceForm({ onMessage, weekDays }: { onMessage: (state: SportActionState) => void; weekDays: CurrentWeekDay[] }) {
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	if (isExpanded) {
+		return <CreateOccurrenceFormPanel onClose={() => setIsExpanded(false)} onMessage={onMessage} weekDays={weekDays} />;
+	}
+
+	return (
+		<aside className="h-fit rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-5">
+			<button type="button" onClick={() => setIsExpanded(true)} className="block w-full rounded-md text-left outline-none transition focus:ring-2 focus:ring-accent/25">
+				<span className="block text-lg font-semibold sm:text-xl">+ Ajouter une activité ponctuelle</span>
+				<span className="mt-2 block text-sm leading-6 text-night/62">Ajoutez une activité seulement pour cette semaine.</span>
+			</button>
 		</aside>
 	);
 }
@@ -244,7 +279,7 @@ function EffortSelect({ defaultValue = "", id }: { defaultValue?: PerceivedEffor
 				id={id}
 				name="perceived_effort"
 				defaultValue={defaultValue}
-				className="mt-2 h-11 w-full rounded-md border border-night/18 bg-white px-3 text-sm text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+				className="mt-2 h-12 w-full rounded-md border border-night/18 bg-white px-3 text-base text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 sm:h-11 sm:text-sm"
 			>
 				<option value="">Non renseigné</option>
 				{Object.entries(PERCEIVED_EFFORT_LABELS).map(([value, label]) => (
@@ -288,23 +323,23 @@ function RepetitionResultInput({
 					required
 					value={value}
 					onChange={(event) => setValue(event.target.value)}
-					className="mt-2 h-11 w-full rounded-md border border-night/18 bg-white px-3 text-sm text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+					className="mt-2 h-12 w-full rounded-md border border-night/18 bg-white px-3 text-base text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 sm:h-11 sm:text-sm"
 				/>
 			</label>
 			<div>
 				<p className="text-xs font-semibold uppercase tracking-[0.16em] text-night/44">Compteur rapide</p>
-				<div className="mt-2 flex gap-2">
+				<div className="mt-2 flex gap-3">
 					<button
 						type="button"
 						onClick={() => adjust(-1)}
-						className="flex h-10 w-10 items-center justify-center rounded-md border border-night/15 text-lg font-semibold text-night/72 transition hover:border-accent hover:text-accent"
+						className="flex h-12 w-12 items-center justify-center rounded-md border border-night/15 text-xl font-semibold text-night/72 transition hover:border-accent hover:text-accent"
 					>
 						-
 					</button>
 					<button
 						type="button"
 						onClick={() => adjust(1)}
-						className="flex h-10 w-10 items-center justify-center rounded-md border border-night/15 text-lg font-semibold text-night/72 transition hover:border-accent hover:text-accent"
+						className="flex h-12 w-12 items-center justify-center rounded-md border border-night/15 text-xl font-semibold text-night/72 transition hover:border-accent hover:text-accent"
 					>
 						+
 					</button>
@@ -340,7 +375,7 @@ function CompleteOccurrenceForm({
 	}, [onClose, onMessage, router, state]);
 
 	return (
-		<form action={formAction} className="mt-4 space-y-4 rounded-md border border-night/10 bg-night/[0.03] p-4">
+		<form action={formAction} className="mt-4 space-y-4 rounded-md border border-night/10 bg-night/[0.03] p-3 sm:p-4">
 			<input type="hidden" name="id" value={occurrence.id} />
 			<div>
 				<p className="text-sm font-semibold text-night">Objectif prévu</p>
@@ -362,7 +397,7 @@ function CompleteOccurrenceForm({
 						step={occurrence.measurement_type === "distance_km" ? "0.01" : "1"}
 						required
 						defaultValue={occurrence.actual_value ?? occurrence.target_value ?? ""}
-						className="mt-2 h-11 w-full rounded-md border border-night/18 bg-white px-3 text-sm text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+						className="mt-2 h-12 w-full rounded-md border border-night/18 bg-white px-3 text-base text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 sm:h-11 sm:text-sm"
 					/>
 				</label>
 			) : null}
@@ -379,7 +414,7 @@ function CompleteOccurrenceForm({
 							step="1"
 							required
 							defaultValue={occurrence.actual_sets ?? occurrence.target_sets ?? ""}
-							className="mt-2 h-11 w-full rounded-md border border-night/18 bg-white px-3 text-sm text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+							className="mt-2 h-12 w-full rounded-md border border-night/18 bg-white px-3 text-base text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 sm:h-11 sm:text-sm"
 						/>
 					</label>
 					<label className="block text-sm font-medium text-night" htmlFor={`actual-reps-${occurrence.id}`}>
@@ -392,7 +427,7 @@ function CompleteOccurrenceForm({
 							step="1"
 							required
 							defaultValue={occurrence.actual_reps ?? occurrence.target_reps ?? ""}
-							className="mt-2 h-11 w-full rounded-md border border-night/18 bg-white px-3 text-sm text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25"
+							className="mt-2 h-12 w-full rounded-md border border-night/18 bg-white px-3 text-base text-night outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/25 sm:h-11 sm:text-sm"
 						/>
 					</label>
 				</div>
@@ -403,16 +438,16 @@ function CompleteOccurrenceForm({
 			<EffortSelect defaultValue={occurrence.perceived_effort ?? ""} id={`perceived-effort-${occurrence.id}`} />
 			<ActionFeedback state={state} />
 
-			<div className="flex flex-wrap gap-3">
+			<div className="grid gap-3 sm:flex sm:flex-wrap">
 				<button
 					type="submit"
 					disabled={isPending}
-					className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
+					className="h-11 rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
 					aria-disabled={isPending}
 				>
 					{isPending ? "Enregistrement..." : occurrence.status === "completed" ? "Enregistrer" : "Confirmer"}
 				</button>
-				<button type="button" onClick={onClose} className="h-10 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent">
+				<button type="button" onClick={onClose} className="h-11 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent">
 					Fermer
 				</button>
 			</div>
@@ -454,7 +489,7 @@ function StatusActionForm({
 			<button
 				type="button"
 				onClick={() => setIsConfirming(true)}
-				className="h-10 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent"
+				className="h-11 w-full rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:w-auto"
 			>
 				{label}
 			</button>
@@ -462,19 +497,19 @@ function StatusActionForm({
 	}
 
 	return (
-		<form action={formAction} className="flex flex-col gap-2 rounded-md border border-night/10 bg-night/[0.03] p-3">
+		<form action={formAction} className="flex flex-col gap-3 rounded-md border border-night/10 bg-night/[0.03] p-3">
 			<input type="hidden" name="id" value={id} />
 			<p className="text-xs leading-5 text-night/60">{confirmationText}</p>
-			<div className="flex flex-wrap gap-2">
+			<div className="grid grid-cols-2 gap-2">
 				<button
 					type="submit"
 					disabled={isPending}
-					className="h-9 rounded-md bg-accent px-3 text-xs font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
+					className="h-10 rounded-md bg-accent px-3 text-xs font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
 					aria-disabled={isPending}
 				>
 					{isPending ? "Envoi..." : "Confirmer"}
 				</button>
-				<button type="button" onClick={() => setIsConfirming(false)} className="h-9 rounded-md border border-night/15 px-3 text-xs font-semibold text-night/72 transition hover:border-accent hover:text-accent">
+				<button type="button" onClick={() => setIsConfirming(false)} className="h-10 rounded-md border border-night/15 px-3 text-xs font-semibold text-night/72 transition hover:border-accent hover:text-accent">
 					Fermer
 				</button>
 			</div>
@@ -496,8 +531,8 @@ function OccurrenceItem({
 	return (
 		<li className="py-4">
 			<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-				<div>
-					<p className="font-semibold">{occurrence.name_snapshot}</p>
+				<div className="min-w-0">
+					<p className="break-words font-semibold">{occurrence.name_snapshot}</p>
 					<div className="mt-2 space-y-1 text-sm leading-6 text-night/64">
 						<p>Prévu : {plannedTarget}</p>
 						{result ? <p>Réalisé : {result}</p> : null}
@@ -507,11 +542,11 @@ function OccurrenceItem({
 				</div>
 
 				{occurrence.status === "planned" ? (
-					<div className="flex flex-wrap gap-3">
+					<div className="grid w-full grid-cols-2 gap-2 sm:w-auto sm:flex sm:flex-wrap sm:gap-3">
 						<button
 							type="button"
 							onClick={() => setIsCompleting((current) => !current)}
-							className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]"
+							className="col-span-2 h-11 rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:col-span-1"
 							aria-expanded={isCompleting}
 						>
 							Terminer
@@ -524,14 +559,14 @@ function OccurrenceItem({
 					<button
 						type="button"
 						onClick={() => setIsCompleting((current) => !current)}
-						className="h-10 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent"
+						className="h-11 w-full rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:w-auto"
 						aria-expanded={isCompleting}
 					>
 						Corriger
 					</button>
 				) : null}
 				{occurrence.status === "skipped" || occurrence.status === "cancelled" ? (
-					<div className="flex flex-col gap-2 sm:items-end">
+					<div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
 						<p className="text-xs leading-5 text-night/50">
 							{occurrence.status === "skipped" ? "Non réalisée : prévue mais pas faite." : "Annulée : retirée de la semaine."}
 						</p>
@@ -613,8 +648,8 @@ export function CurrentWeekManager({
 			<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
 				<div className="order-2 space-y-5 lg:order-1">
 					{!hasTemplates && !hasOccurrences ? (
-						<div className="rounded-lg border border-ivory/15 bg-ivory p-6 text-night">
-							<h2 className="text-2xl font-semibold">Créez d&apos;abord votre semaine type.</h2>
+						<div className="rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-6">
+							<h2 className="text-xl font-semibold sm:text-2xl">Créez d&apos;abord votre semaine type.</h2>
 							<p className="mt-3 max-w-2xl text-sm leading-6 text-night/64">
 								La semaine actuelle se construit à partir de vos activités habituelles.
 							</p>
@@ -625,8 +660,8 @@ export function CurrentWeekManager({
 					) : null}
 
 					{hasTemplates && !hasOccurrences ? (
-						<div className="rounded-lg border border-ivory/15 bg-ivory p-6 text-night">
-							<h2 className="text-2xl font-semibold">Aucune activité générée cette semaine.</h2>
+						<div className="rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-6">
+							<h2 className="text-xl font-semibold sm:text-2xl">Aucune activité générée cette semaine.</h2>
 							<p className="mt-3 max-w-2xl text-sm leading-6 text-night/64">
 								Générez votre semaine actuelle depuis votre semaine type. Les résultats que vous indiquerez ensuite resteront propres à cette semaine.
 							</p>
@@ -638,7 +673,7 @@ export function CurrentWeekManager({
 
 					{hasOccurrences ? (
 						<>
-							<div className="flex flex-col gap-4 rounded-lg border border-ivory/15 bg-ivory p-5 text-night sm:flex-row sm:items-center sm:justify-between">
+							<div className="flex flex-col gap-4 rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:flex-row sm:items-center sm:justify-between sm:p-5">
 								<div>
 									<p className="text-lg font-semibold">Activités de la semaine</p>
 									<p className="mt-1 text-sm leading-6 text-night/64">
@@ -653,7 +688,7 @@ export function CurrentWeekManager({
 									const dayOccurrences = occurrencesByDate.get(day.dateKey) ?? [];
 
 									return (
-										<section key={day.dateKey} className="rounded-lg border border-ivory/15 bg-ivory p-5 text-night">
+										<section key={day.dateKey} className="rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-5">
 											<div className="flex flex-col gap-1 border-b border-night/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
 												<h2 className="text-xl font-semibold">{day.label}</h2>
 												<p className="text-sm text-night/56">{day.dateLabel}</p>

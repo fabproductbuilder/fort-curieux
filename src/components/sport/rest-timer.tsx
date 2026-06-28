@@ -61,20 +61,22 @@ export function RestTimer() {
 	}
 
 	return (
-		<section className="rounded-lg border border-ivory/15 bg-ivory p-5 text-night">
+		<section className="rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-5">
 			<p className="text-xs font-semibold uppercase tracking-[0.18em] text-night/44">Outils rapides</p>
-			<h2 className="mt-3 text-xl font-semibold">Timer de repos</h2>
-			<p className="mt-4 tabular-nums text-4xl font-semibold text-night" aria-live="polite">
-				{formatTime(remainingSeconds)}
-			</p>
+			<div className="mt-3 flex items-end justify-between gap-4">
+				<h2 className="text-lg font-semibold sm:text-xl">Timer de repos</h2>
+				<p className="tabular-nums text-3xl font-semibold leading-none text-night sm:text-4xl" aria-live="polite">
+					{formatTime(remainingSeconds)}
+				</p>
+			</div>
 
-			<div className="mt-5 grid grid-cols-2 gap-2">
+			<div className="mt-4 grid grid-cols-4 gap-2 sm:grid-cols-2">
 				{REST_DURATIONS.map((duration) => (
 					<button
 						key={duration.seconds}
 						type="button"
 						onClick={() => selectDuration(duration.seconds)}
-						className={`h-10 rounded-md border px-3 text-sm font-semibold transition ${
+						className={`h-11 rounded-md border px-2 text-xs font-semibold transition sm:px-3 sm:text-sm ${
 							selectedSeconds === duration.seconds ? "border-accent bg-accent/18 text-night" : "border-night/15 text-night/70 hover:border-accent hover:text-night"
 						}`}
 					>
@@ -83,14 +85,14 @@ export function RestTimer() {
 				))}
 			</div>
 
-			<div className="mt-4 flex flex-wrap gap-2">
-				<button type="button" onClick={startTimer} className="h-10 rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]">
+			<div className="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+				<button type="button" onClick={startTimer} className="h-11 rounded-md bg-accent px-3 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:px-4">
 					Démarrer
 				</button>
-				<button type="button" onClick={pauseTimer} className="h-10 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent">
+				<button type="button" onClick={pauseTimer} className="h-11 rounded-md border border-night/15 px-3 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:px-4">
 					Pause
 				</button>
-				<button type="button" onClick={resetTimer} className="h-10 rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent">
+				<button type="button" onClick={resetTimer} className="col-span-2 h-11 rounded-md border border-night/15 px-3 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:col-span-1 sm:px-4">
 					Réinitialiser
 				</button>
 			</div>

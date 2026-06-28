@@ -11,23 +11,23 @@ export default async function SportPage() {
 	}
 
 	return (
-		<main className="min-h-screen bg-night px-6 py-8 text-ivory sm:px-10 lg:px-16">
-			<section className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-5xl flex-col gap-12">
+		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">
+			<section className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col gap-10 sm:min-h-[calc(100vh-4rem)] sm:gap-12">
 				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<Link href="/app" className="text-lg font-semibold underline-offset-4 hover:underline">
+						<Link href="/app" className="inline-flex min-h-9 items-center text-lg font-semibold underline-offset-4 hover:underline">
 							Fort Curieux
 						</Link>
 						<p className="mt-2 text-sm text-ivory/58">Sport</p>
 					</div>
-					<Link href="/app" className="inline-flex h-11 items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent">
+					<Link href="/app" className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto">
 						Mon espace
 					</Link>
 				</header>
 
-				<div className="max-w-3xl py-8">
-					<h1 className="text-4xl font-semibold sm:text-5xl">Sport</h1>
-					<p className="mt-6 text-lg leading-8 text-ivory/72">Construisez votre semaine type sportive avant d&apos;enregistrer vos séances.</p>
+				<div className="max-w-3xl py-4 sm:py-8">
+					<h1 className="text-3xl font-semibold sm:text-5xl">Sport</h1>
+					<p className="mt-5 text-base leading-7 text-ivory/72 sm:text-lg sm:leading-8">Construisez votre semaine type sportive avant d&apos;enregistrer vos séances.</p>
 				</div>
 
 				<div className="grid gap-4 sm:grid-cols-2">
