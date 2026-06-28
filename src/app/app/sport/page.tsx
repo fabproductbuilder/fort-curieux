@@ -143,6 +143,9 @@ export default async function SportPage() {
 						<Link href="/app/sport/semaine-type" className="inline-flex h-12 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent">
 							Modifier ma semaine type
 						</Link>
+						<Link href="/app/sport/historique" className="inline-flex h-12 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent">
+							Voir mon historique
+						</Link>
 					</nav>
 				</div>
 			</section>
