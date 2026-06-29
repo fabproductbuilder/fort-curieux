@@ -60,20 +60,16 @@ export function buildMultipleChoiceOptions(prompt: CultureMultipleChoicePrompt, 
 
 	const compatiblePrompts = allPrompts.filter((candidate) => isCompatiblePrompt(prompt, candidate));
 
+	for (const choice of prompt.choices) {
+		addWrongChoice(choice);
+	}
+
 	if (prompt.collection && wrongChoices.length < 3) {
 		addPromptAnswers(shuffle(compatiblePrompts.filter((candidate) => candidate.collection === prompt.collection)));
 	}
 
 	if (wrongChoices.length < 3) {
 		addPromptAnswers(shuffle(compatiblePrompts.filter((candidate) => candidate.category === prompt.category)));
-	}
-
-	if (wrongChoices.length < 3) {
-		addPromptAnswers(shuffle(compatiblePrompts));
-	}
-
-	for (const choice of prompt.choices) {
-		addWrongChoice(choice);
 	}
 
 	return shuffle([prompt.answer, ...wrongChoices.slice(0, 3)]);
