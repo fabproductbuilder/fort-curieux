@@ -58,7 +58,7 @@ export function NewPasswordForm() {
 				className="mt-2 flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70"
 				aria-disabled={isPending}
 			>
-				{isPending ? "Mise à jour en cours..." : "Mettre à jour le mot de passe"}
+				{isPending ? "Mise à jour..." : "Mettre à jour le mot de passe"}
 			</button>
 		</form>
 	);

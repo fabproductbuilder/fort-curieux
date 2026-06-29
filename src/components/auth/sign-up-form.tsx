@@ -18,7 +18,7 @@ export function SignUpForm() {
 			<TextField label="Email" name="email" type="email" autoComplete="email" required />
 			<TextField label="Mot de passe" name="password" type="password" autoComplete="new-password" required />
 			<TextField label="Confirmation du mot de passe" name="password_confirmation" type="password" autoComplete="new-password" required />
-			<SubmitButton pendingLabel="Création en cours...">Créer mon compte</SubmitButton>
+			<SubmitButton pendingLabel="Création...">Créer mon compte</SubmitButton>
 			<p className="pt-2 text-sm text-night/68">
 				Déjà inscrit ?{" "}
 				<Link href="/connexion" className="font-semibold text-night underline-offset-4 hover:underline">

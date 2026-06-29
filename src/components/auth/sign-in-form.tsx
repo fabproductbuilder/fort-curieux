@@ -25,7 +25,7 @@ export function SignInForm({ notice }: SignInFormProps) {
 			<FormMessage state={state} />
 			<TextField label="Email" name="email" type="email" autoComplete="email" required />
 			<TextField label="Mot de passe" name="password" type="password" autoComplete="current-password" required />
-			<SubmitButton pendingLabel="Connexion en cours...">Se connecter</SubmitButton>
+			<SubmitButton pendingLabel="Connexion...">Se connecter</SubmitButton>
 			<div className="flex flex-col gap-3 pt-2 text-sm text-night/68 sm:flex-row sm:items-center sm:justify-between">
 				<Link href="/inscription" className="font-semibold text-night underline-offset-4 hover:underline">
 					Créer un compte

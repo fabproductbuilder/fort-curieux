@@ -124,7 +124,7 @@ export function CultureSession({ questions }: CultureSessionProps) {
 
 	if (isSummaryVisible) {
 		const ratio = sessionQuestions.length > 0 ? score / sessionQuestions.length : 0;
-		const message = ratio === 1 ? "Sans faute. La mémoire a apprécié la promenade." : ratio >= 0.6 ? "Bonne session. Quelques repères vont revenir plus tard." : "Session utile. Les questions à revoir reviendront bientôt.";
+		const message = ratio === 1 ? "Sans faute. La mémoire a apprécié la promenade." : ratio >= 0.6 ? "Bonne session. Quelques repères vont revenir plus tard." : "Session utile. Les questions à revoir reviendront lors de prochaines révisions.";
 
 		return (
 			<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
@@ -226,7 +226,7 @@ export function CultureSession({ questions }: CultureSessionProps) {
 				})}
 			</div>
 
-			{pendingChoice ? <p className="mt-4 text-sm font-semibold text-night/56">Réponse en cours d&apos;enregistrement...</p> : null}
+			{pendingChoice ? <p className="mt-4 text-sm font-semibold text-night/56">Enregistrement de la réponse...</p> : null}
 
 			{actionError ? (
 				<p role="alert" className="mt-4 rounded-md border border-accent/30 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">
