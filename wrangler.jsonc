@@ -2,6 +2,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "fort-curieux",
 	"main": ".open-next/worker.js",
+	"keep_vars": true,
 	"compatibility_date": "2026-06-26",
 	"compatibility_flags": [
 		"nodejs_compat",
