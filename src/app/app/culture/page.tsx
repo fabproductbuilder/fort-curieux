@@ -144,7 +144,10 @@ export default async function CulturePage() {
 					<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Session rapide</p>
 					<h2 className="mt-2 text-2xl font-semibold">Culture générale</h2>
 					<p className="mt-4 text-sm leading-6 text-night/68">Un mélange de questions issues de toutes les catégories pour entretenir votre culture générale régulièrement.</p>
-					<p className="mt-5 rounded-md border border-night/10 bg-night/[0.03] px-4 py-3 text-sm font-semibold text-night/64">La session interactive sera ajoutée à l&apos;étape suivante.</p>
+					<p className="mt-4 text-sm font-semibold text-night/56">5 questions issues de toutes les catégories.</p>
+					<Link href="/app/culture/session" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
+						Lancer une session rapide
+					</Link>
 				</section>
 
 				<section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Statistiques Culture">
