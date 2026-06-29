@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 
 const pillars = [
@@ -21,7 +22,10 @@ export default async function Home() {
 		<main className="min-h-screen bg-night text-ivory">
 			<section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-between px-6 py-8 sm:px-10 lg:px-16">
 				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
-					<p className="text-lg font-semibold">Fort Curieux</p>
+					<div className="flex items-center gap-3">
+						<Image src="/icons/icon-192.png" alt="" width={36} height={36} priority className="h-9 w-9 rounded-md border border-ivory/15" />
+						<p className="text-lg font-semibold">Fort Curieux</p>
+					</div>
 					<nav className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center" aria-label="Accès au compte">
 						{isAuthenticated ? (
 							<Link
