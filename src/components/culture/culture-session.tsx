@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { recordCultureAnswerAction } from "@/app/app/culture/session/actions";
 import { CultureUniverseSelector } from "@/components/culture/culture-universe-selector";
 import { getCultureCategorySelectionLabel } from "@/lib/culture/categories";
+import { filterCultureQuestionsByCategories, selectBalancedCultureQuestions } from "@/lib/culture/question-selection";
 import type { CultureCategory } from "@/types/culture";
 
 export type CultureSessionQuestion = {
@@ -29,20 +30,6 @@ const SESSION_QUESTION_OPTIONS = [10, 20] as const;
 
 type SessionQuestionCount = (typeof SESSION_QUESTION_OPTIONS)[number];
 
-function shuffle<T>(items: T[]): T[] {
-	const shuffledItems = [...items];
-
-	for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
-		const swapIndex = Math.floor(Math.random() * (index + 1));
-		const currentItem = shuffledItems[index];
-
-		shuffledItems[index] = shuffledItems[swapIndex];
-		shuffledItems[swapIndex] = currentItem;
-	}
-
-	return shuffledItems;
-}
-
 export function CultureSession({ questions }: CultureSessionProps) {
 	const [selectedQuestionCount, setSelectedQuestionCount] = useState<SessionQuestionCount>(10);
 	const [selectedCategories, setSelectedCategories] = useState<CultureCategory[]>([]);
@@ -59,12 +46,12 @@ export function CultureSession({ questions }: CultureSessionProps) {
 	const score = Object.values(feedbackByQuestionId).filter((feedback) => feedback.isCorrect).length;
 	const answeredCount = Object.keys(feedbackByQuestionId).length;
 	const isLastQuestion = currentIndex === sessionQuestions.length - 1;
-	const availableQuestions = selectedCategories.length === 0 ? questions : questions.filter((question) => selectedCategories.includes(question.category));
+	const availableQuestions = filterCultureQuestionsByCategories(questions, selectedCategories);
 	const selectedUniverseLabel = getCultureCategorySelectionLabel(selectedCategories);
 	const isLimitedByAvailableQuestions = availableQuestions.length > 0 && availableQuestions.length < selectedQuestionCount;
 
 	function handleStartSession() {
-		setSessionQuestions(shuffle(availableQuestions).slice(0, selectedQuestionCount));
+		setSessionQuestions(selectBalancedCultureQuestions(questions, selectedCategories, selectedQuestionCount));
 		setCurrentIndex(0);
 		setFeedbackByQuestionId({});
 		setPendingChoice(null);

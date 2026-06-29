@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { CultureUniverseSelector } from "@/components/culture/culture-universe-selector";
 import { getCultureCategorySelectionLabel } from "@/lib/culture/categories";
+import { filterCultureQuestionsByCategories, selectBalancedCultureQuestions } from "@/lib/culture/question-selection";
 import type { CultureCategory } from "@/types/culture";
 
 export type CultureOralQuizQuestion = {
@@ -27,20 +28,6 @@ const QUESTION_AMOUNT_OPTIONS: { value: QuestionAmount; label: string }[] = [
 	{ value: "all", label: "Toutes les questions disponibles" },
 ];
 
-function shuffle<T>(items: T[]): T[] {
-	const shuffledItems = [...items];
-
-	for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
-		const swapIndex = Math.floor(Math.random() * (index + 1));
-		const currentItem = shuffledItems[index];
-
-		shuffledItems[index] = shuffledItems[swapIndex];
-		shuffledItems[swapIndex] = currentItem;
-	}
-
-	return shuffledItems;
-}
-
 function getRequestedAmount(amount: QuestionAmount): number | null {
 	return amount === "all" ? null : Number(amount);
 }
@@ -55,18 +42,12 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 	const [hasStarted, setHasStarted] = useState(false);
 	const currentQuestion = sessionQuestions[currentIndex];
 	const selectedUniverseLabel = getCultureCategorySelectionLabel(selectedCategories);
-	const availableQuestions = useMemo(
-		() => (selectedCategories.length === 0 ? questions : questions.filter((question) => selectedCategories.includes(question.category))),
-		[selectedCategories, questions],
-	);
+	const availableQuestions = useMemo(() => filterCultureQuestionsByCategories(questions, selectedCategories), [selectedCategories, questions]);
 	const requestedAmount = getRequestedAmount(questionAmount);
 	const isLimitedByAvailableQuestions = requestedAmount !== null && availableQuestions.length > 0 && availableQuestions.length < requestedAmount;
 
 	function handleStartQuiz() {
-		const shuffledQuestions = shuffle(availableQuestions);
-		const selectedQuestions = requestedAmount === null ? shuffledQuestions : shuffledQuestions.slice(0, requestedAmount);
-
-		setSessionQuestions(selectedQuestions);
+		setSessionQuestions(selectBalancedCultureQuestions(questions, selectedCategories, requestedAmount));
 		setCurrentIndex(0);
 		setIsAnswerVisible(false);
 		setIsSummaryVisible(false);
