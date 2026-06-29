@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { createClient } from "@/lib/supabase/server";
+import { TARGETED_CULTURE_BLOCKS } from "@/lib/culture/targeted-reviews";
 import type { CultureCategory, CultureCollection } from "@/types/culture";
 
 type CultureItemSummaryRow = {
@@ -157,6 +158,23 @@ export default async function CulturePage() {
 							Lancer un quiz oral
 						</Link>
 					</article>
+				</section>
+
+				<section>
+					<div className="max-w-2xl">
+						<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Géographie</p>
+						<h2 className="mt-2 text-2xl font-semibold">Révisions ciblées</h2>
+						<p className="mt-3 text-sm leading-6 text-ivory/64">Travaillez un bloc précis quand vous voulez mémoriser une série complète.</p>
+					</div>
+					<div className="mt-4 grid gap-3 md:grid-cols-3">
+						{TARGETED_CULTURE_BLOCKS.map((block) => (
+							<Link key={block.collection} href={`/app/culture/ciblee?bloc=${block.collection}`} className="rounded-lg border border-ivory/15 bg-ivory/[0.04] p-4 transition hover:border-accent hover:bg-ivory/[0.07]">
+								<h3 className="text-lg font-semibold">{block.label}</h3>
+								<p className="mt-2 text-sm font-semibold text-accent">{block.shortDescription}</p>
+								<p className="mt-3 text-sm leading-6 text-ivory/64">{block.description}</p>
+							</Link>
+						))}
+					</div>
 				</section>
 
 				<section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Statistiques Culture">
