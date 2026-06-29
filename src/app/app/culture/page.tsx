@@ -152,8 +152,8 @@ export default async function CulturePage() {
 
 					<article className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
 						<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Quiz oral</p>
-						<h2 className="mt-2 text-2xl font-semibold">Culture à voix haute</h2>
-						<p className="mt-4 text-sm leading-6 text-night/68">Lancez une série de questions à lire à voix haute, seul ou entre amis.</p>
+						<h2 className="mt-2 text-2xl font-semibold">Quiz de culture générale</h2>
+						<p className="mt-4 text-sm leading-6 text-night/68">Jouez une série de questions, seul ou entre amis, puis révélez les réponses une par une.</p>
 						<Link href="/app/culture/quiz" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md border border-night/15 px-4 text-sm font-semibold text-night transition hover:border-accent hover:text-accent sm:w-auto">
 							Lancer un quiz oral
 						</Link>
