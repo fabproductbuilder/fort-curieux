@@ -153,27 +153,27 @@ export default async function CulturePage() {
 				<section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Statistiques Culture">
 					<div className="rounded-lg border border-ivory/15 p-4">
 						<p className="text-2xl font-semibold">{totalItems}</p>
-						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Éléments disponibles</p>
+						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Repères à réviser</p>
 					</div>
 					<div className="rounded-lg border border-ivory/15 p-4">
 						<p className="text-2xl font-semibold">{totalPrompts}</p>
-						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Questions disponibles</p>
+						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Questions</p>
 					</div>
 					<div className="rounded-lg border border-ivory/15 p-4">
 						<p className="text-2xl font-semibold">{collectionNames.length}</p>
-						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Collections</p>
+						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Thèmes de révision</p>
 					</div>
 					<div className="rounded-lg border border-ivory/15 p-4">
 						<p className="text-2xl font-semibold">{availableCategoryCount}</p>
-						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Catégories</p>
+						<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Univers</p>
 					</div>
 				</section>
 
 				<section>
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
 						<div>
-							<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Catégories</p>
-							<h2 className="mt-2 text-2xl font-semibold">Vos repères disponibles</h2>
+							<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Univers</p>
+							<h2 className="mt-2 text-2xl font-semibold">Univers de culture</h2>
 						</div>
 					</div>
 
@@ -187,7 +187,7 @@ export default async function CulturePage() {
 									</div>
 									<p className="mt-3 text-sm leading-6 text-ivory/64">{category.description}</p>
 									<p className="mt-4 text-sm font-semibold text-ivory/78">
-										{category.itemCount} élément{category.itemCount > 1 ? "s" : ""}
+										{category.itemCount} repère{category.itemCount > 1 ? "s" : ""}
 									</p>
 								</article>
 							))}
@@ -198,7 +198,7 @@ export default async function CulturePage() {
 				</section>
 
 				<section className="pb-8">
-					<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Collections disponibles</p>
+					<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Thèmes de révision</p>
 					{collectionNames.length > 0 ? (
 						<ul className="mt-4 flex flex-wrap gap-2">
 							{collectionNames.map((collection) => (
