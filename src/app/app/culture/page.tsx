@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BrandMark } from "@/components/brand/brand-mark";
 import { createClient } from "@/lib/supabase/server";
 import type { CultureCategory, CultureCollection } from "@/types/culture";
 
@@ -119,9 +120,7 @@ export default async function CulturePage() {
 			<section className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col gap-8 sm:min-h-[calc(100vh-4rem)] sm:gap-10">
 				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<Link href="/app" className="inline-flex min-h-9 items-center text-lg font-semibold underline-offset-4 hover:underline">
-							Fort Curieux
-						</Link>
+						<BrandMark href="/app" />
 						<p className="mt-2 text-sm text-ivory/58">Culture</p>
 					</div>
 					<Link href="/app" className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto">

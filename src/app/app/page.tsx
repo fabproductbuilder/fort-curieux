@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { BrandMark } from "@/components/brand/brand-mark";
 import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "./actions";
 
@@ -22,10 +22,7 @@ export default async function AppPage() {
 		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">
 			<section className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col justify-between gap-10 sm:min-h-[calc(100vh-4rem)] sm:gap-12">
 				<header className="flex flex-col gap-3 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
-					<div className="flex items-center gap-3">
-						<Image src="/icons/icon-192.png" alt="" width={36} height={36} priority className="h-9 w-9 rounded-md border border-ivory/15" />
-						<p className="text-lg font-semibold">Fort Curieux</p>
-					</div>
+					<BrandMark priority />
 					<p className="break-all text-sm text-ivory/68 sm:break-normal">{email}</p>
 				</header>
 

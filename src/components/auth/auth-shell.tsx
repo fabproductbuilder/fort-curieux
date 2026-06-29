@@ -1,3 +1,5 @@
+import { BrandMark } from "@/components/brand/brand-mark";
+
 type AuthShellProps = {
 	title: string;
 	subtitle: string;
@@ -9,7 +11,7 @@ export function AuthShell({ title, subtitle, children }: AuthShellProps) {
 		<main className="min-h-screen bg-night px-6 py-8 text-ivory sm:px-10 lg:px-16">
 			<section className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center gap-12 lg:grid-cols-[0.85fr_1fr]">
 				<div className="max-w-xl">
-					<p className="text-lg font-semibold">Fort Curieux</p>
+					<BrandMark priority />
 					<p className="mt-6 max-w-lg text-4xl font-semibold leading-tight sm:text-5xl">
 						Entraînez votre corps. Entretenez votre culture.
 					</p>
