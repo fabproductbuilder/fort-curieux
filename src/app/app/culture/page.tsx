@@ -142,10 +142,10 @@ export default async function CulturePage() {
 				<section className="grid gap-3 md:grid-cols-2" aria-label="Modes Culture">
 					<article className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
 						<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Session rapide</p>
-						<h2 className="mt-2 text-2xl font-semibold">Révision personnelle</h2>
-						<p className="mt-4 text-sm leading-6 text-night/68">10 ou 20 questions issues de tous les univers pour entretenir vos repères.</p>
+						<h2 className="mt-2 text-2xl font-semibold">Révisions personnelles</h2>
+						<p className="mt-4 text-sm leading-6 text-night/68">10 ou 20 questions issues de tous les univers, ou d&apos;une sélection d&apos;univers.</p>
 						<Link href="/app/culture/session" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
-							Lancer une session rapide
+							Lancer une session
 						</Link>
 					</article>
 

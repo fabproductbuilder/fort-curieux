@@ -175,6 +175,7 @@ function buildSessionQuestions(prompts: ActiveCulturePrompt[]): CultureSessionQu
 	return selectedPrompts.map((prompt) => ({
 		id: prompt.id,
 		question: prompt.question,
+		category: prompt.category,
 		categoryLabel: CATEGORY_LABELS[prompt.category],
 		collectionLabel: getCollectionLabel(prompt.collection),
 		choices: buildChoices(prompt, prompts),

@@ -2,10 +2,14 @@
 
 import { useRef, useState } from "react";
 import { recordCultureAnswerAction } from "@/app/app/culture/session/actions";
+import { CultureUniverseSelector } from "@/components/culture/culture-universe-selector";
+import { getCultureCategorySelectionLabel } from "@/lib/culture/categories";
+import type { CultureCategory } from "@/types/culture";
 
 export type CultureSessionQuestion = {
 	id: string;
 	question: string;
+	category: CultureCategory;
 	categoryLabel: string;
 	collectionLabel: string | null;
 	choices: string[];
@@ -41,6 +45,7 @@ function shuffle<T>(items: T[]): T[] {
 
 export function CultureSession({ questions }: CultureSessionProps) {
 	const [selectedQuestionCount, setSelectedQuestionCount] = useState<SessionQuestionCount>(10);
+	const [selectedCategories, setSelectedCategories] = useState<CultureCategory[]>([]);
 	const [sessionQuestions, setSessionQuestions] = useState<CultureSessionQuestion[]>([]);
 	const [hasStarted, setHasStarted] = useState(false);
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,10 +59,12 @@ export function CultureSession({ questions }: CultureSessionProps) {
 	const score = Object.values(feedbackByQuestionId).filter((feedback) => feedback.isCorrect).length;
 	const answeredCount = Object.keys(feedbackByQuestionId).length;
 	const isLastQuestion = currentIndex === sessionQuestions.length - 1;
-	const isLimitedByAvailableQuestions = questions.length > 0 && questions.length < selectedQuestionCount;
+	const availableQuestions = selectedCategories.length === 0 ? questions : questions.filter((question) => selectedCategories.includes(question.category));
+	const selectedUniverseLabel = getCultureCategorySelectionLabel(selectedCategories);
+	const isLimitedByAvailableQuestions = availableQuestions.length > 0 && availableQuestions.length < selectedQuestionCount;
 
 	function handleStartSession() {
-		setSessionQuestions(shuffle(questions).slice(0, selectedQuestionCount));
+		setSessionQuestions(shuffle(availableQuestions).slice(0, selectedQuestionCount));
 		setCurrentIndex(0);
 		setFeedbackByQuestionId({});
 		setPendingChoice(null);
@@ -150,33 +157,51 @@ export function CultureSession({ questions }: CultureSessionProps) {
 			<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
 				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
 				<h2 className="mt-2 text-2xl font-semibold">Choisir ma session</h2>
-				<p className="mt-4 text-sm leading-6 text-night/68">Sélectionnez le nombre de questions pour votre routine du jour.</p>
+				<p className="mt-4 text-sm leading-6 text-night/68">Sélectionnez le nombre de questions et les univers à réviser pour votre routine du jour.</p>
 
-				<div className="mt-6 grid gap-2 sm:grid-cols-2" aria-label="Nombre de questions">
-					{SESSION_QUESTION_OPTIONS.map((questionCount) => {
-						const isSelected = selectedQuestionCount === questionCount;
+				<div className="mt-6 grid gap-6">
+					<fieldset>
+						<legend className="text-sm font-semibold text-night">Nombre de questions</legend>
+						<div className="mt-3 grid gap-2 sm:grid-cols-2" aria-label="Nombre de questions">
+							{SESSION_QUESTION_OPTIONS.map((questionCount) => {
+								const isSelected = selectedQuestionCount === questionCount;
 
-						return (
-							<button
-								key={questionCount}
-								type="button"
-								onClick={() => setSelectedQuestionCount(questionCount)}
-								className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
-									isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
-								}`}
-							>
-								{questionCount} questions
-							</button>
-						);
-					})}
+								return (
+									<button
+										key={questionCount}
+										type="button"
+										onClick={() => setSelectedQuestionCount(questionCount)}
+										className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
+											isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
+										}`}
+									>
+										{questionCount} questions
+									</button>
+								);
+							})}
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend className="text-sm font-semibold text-night">Univers</legend>
+						<div className="mt-3">
+							<CultureUniverseSelector selectedCategories={selectedCategories} onChange={setSelectedCategories} />
+						</div>
+					</fieldset>
 				</div>
 
 				<p className="mt-5 text-sm leading-6 text-night/62">
-					{questions.length} question{questions.length > 1 ? "s" : ""} disponible{questions.length > 1 ? "s" : ""} dans tous les univers.
+					{availableQuestions.length} question{availableQuestions.length > 1 ? "s" : ""} disponible{availableQuestions.length > 1 ? "s" : ""} pour {selectedUniverseLabel.toLocaleLowerCase("fr-FR")}.
 					{isLimitedByAvailableQuestions ? " La session utilisera toutes celles disponibles." : ""}
 				</p>
 
-				<button type="button" onClick={handleStartSession} disabled={questions.length === 0} className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:bg-night/15 disabled:text-night/42 sm:w-auto">
+				{availableQuestions.length === 0 ? (
+					<p role="alert" className="mt-4 rounded-md border border-accent/30 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">
+						Aucune question active n&apos;est disponible pour cette sélection.
+					</p>
+				) : null}
+
+				<button type="button" onClick={handleStartSession} disabled={availableQuestions.length === 0} className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:bg-night/15 disabled:text-night/42 sm:w-auto">
 					Démarrer la session
 				</button>
 			</section>

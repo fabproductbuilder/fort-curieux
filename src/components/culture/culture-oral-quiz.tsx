@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { CultureUniverseSelector } from "@/components/culture/culture-universe-selector";
+import { getCultureCategorySelectionLabel } from "@/lib/culture/categories";
 import type { CultureCategory } from "@/types/culture";
 
 export type CultureOralQuizQuestion = {
@@ -15,8 +17,6 @@ export type CultureOralQuizQuestion = {
 
 type QuestionAmount = "10" | "20" | "all";
 
-type CategoryFilter = "all" | CultureCategory;
-
 type CultureOralQuizProps = {
 	questions: CultureOralQuizQuestion[];
 };
@@ -25,15 +25,6 @@ const QUESTION_AMOUNT_OPTIONS: { value: QuestionAmount; label: string }[] = [
 	{ value: "10", label: "10 questions" },
 	{ value: "20", label: "20 questions" },
 	{ value: "all", label: "Toutes les questions disponibles" },
-];
-
-const CATEGORY_OPTIONS: { value: CategoryFilter; label: string }[] = [
-	{ value: "all", label: "Toutes les catégories" },
-	{ value: "history", label: "Histoire" },
-	{ value: "geography", label: "Géographie" },
-	{ value: "inventions", label: "Inventions" },
-	{ value: "music", label: "Musique" },
-	{ value: "cinema", label: "Cinéma" },
 ];
 
 function shuffle<T>(items: T[]): T[] {
@@ -50,27 +41,23 @@ function shuffle<T>(items: T[]): T[] {
 	return shuffledItems;
 }
 
-function getCategoryLabel(category: CategoryFilter): string {
-	return CATEGORY_OPTIONS.find((option) => option.value === category)?.label ?? "Toutes les catégories";
-}
-
 function getRequestedAmount(amount: QuestionAmount): number | null {
 	return amount === "all" ? null : Number(amount);
 }
 
 export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 	const [questionAmount, setQuestionAmount] = useState<QuestionAmount>("10");
-	const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+	const [selectedCategories, setSelectedCategories] = useState<CultureCategory[]>([]);
 	const [sessionQuestions, setSessionQuestions] = useState<CultureOralQuizQuestion[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isAnswerVisible, setIsAnswerVisible] = useState(false);
 	const [isSummaryVisible, setIsSummaryVisible] = useState(false);
 	const [hasStarted, setHasStarted] = useState(false);
 	const currentQuestion = sessionQuestions[currentIndex];
-	const selectedCategoryLabel = getCategoryLabel(categoryFilter);
+	const selectedUniverseLabel = getCultureCategorySelectionLabel(selectedCategories);
 	const availableQuestions = useMemo(
-		() => (categoryFilter === "all" ? questions : questions.filter((question) => question.category === categoryFilter)),
-		[categoryFilter, questions],
+		() => (selectedCategories.length === 0 ? questions : questions.filter((question) => selectedCategories.includes(question.category))),
+		[selectedCategories, questions],
 	);
 	const requestedAmount = getRequestedAmount(questionAmount);
 	const isLimitedByAvailableQuestions = requestedAmount !== null && availableQuestions.length > 0 && availableQuestions.length < requestedAmount;
@@ -123,7 +110,7 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Bilan</p>
 				<h2 className="mt-2 text-3xl font-semibold">{sessionQuestions.length} question{sessionQuestions.length > 1 ? "s" : ""} parcourue{sessionQuestions.length > 1 ? "s" : ""}</h2>
 				<p className="mt-4 text-sm leading-6 text-night/68">
-					Univers utilisé : <span className="font-semibold text-night">{selectedCategoryLabel}</span>.
+					Univers utilisés : <span className="font-semibold text-night">{selectedUniverseLabel}</span>.
 				</p>
 				<p className="mt-2 text-sm leading-6 text-night/68">Aucun score n&apos;est affiché : ce mode est pensé pour des réponses orales, seul ou entre amis.</p>
 				<div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -150,7 +137,7 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 						</p>
 						<p className="mt-2 text-sm font-semibold text-accent">{currentQuestion.categoryLabel}</p>
 					</div>
-					<p className="text-sm text-night/56">{selectedCategoryLabel}</p>
+					<p className="text-sm text-night/56">{selectedUniverseLabel}</p>
 				</div>
 
 				{currentQuestion.collectionLabel ? <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-night/44">{currentQuestion.collectionLabel}</p> : null}
@@ -177,7 +164,7 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 		<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
 			<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
 			<h2 className="mt-2 text-2xl font-semibold">Préparer le quiz oral</h2>
-			<p className="mt-4 text-sm leading-6 text-night/68">Choisissez un nombre de questions et un univers, puis révélez les réponses une par une.</p>
+			<p className="mt-4 text-sm leading-6 text-night/68">Choisissez un nombre de questions et un ou plusieurs univers, puis révélez les réponses une par une.</p>
 
 			<div className="mt-6 grid gap-6">
 				<fieldset>
@@ -204,23 +191,8 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 
 				<fieldset>
 					<legend className="text-sm font-semibold text-night">Périmètre</legend>
-					<div className="mt-3 grid gap-2 sm:grid-cols-2">
-						{CATEGORY_OPTIONS.map((option) => {
-							const isSelected = categoryFilter === option.value;
-
-							return (
-								<button
-									key={option.value}
-									type="button"
-									onClick={() => setCategoryFilter(option.value)}
-									className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
-										isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
-									}`}
-								>
-									{option.label}
-								</button>
-							);
-						})}
+					<div className="mt-3">
+						<CultureUniverseSelector selectedCategories={selectedCategories} onChange={setSelectedCategories} />
 					</div>
 				</fieldset>
 			</div>
