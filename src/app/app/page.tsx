@@ -40,10 +40,11 @@ export default async function AppPage() {
 								</Link>
 							</div>
 						</div>
-						<div className="rounded-lg border border-ivory/15 p-5 text-ivory/54">
-							<p className="text-2xl font-semibold text-ivory/72">Culture</p>
-							<p className="mt-4 text-sm leading-6">Entretenez vos repères en histoire, géographie, sciences et musique avec des sessions courtes et régulières.</p>
-						</div>
+						<Link href="/app/culture" className="rounded-lg border border-ivory/15 p-5 text-ivory/72 transition hover:border-accent hover:text-ivory focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-night">
+							<p className="text-2xl font-semibold">Culture</p>
+							<p className="mt-4 text-sm leading-6 text-ivory/62">Entretenez vos repères en histoire, géographie, inventions, musique et cinéma avec des sessions courtes et régulières.</p>
+							<p className="mt-5 inline-flex min-h-10 items-center text-sm font-semibold text-accent underline-offset-4 hover:underline">Ouvrir Culture</p>
+						</Link>
 					</div>
 				</div>
 
