@@ -2,8 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/brand/brand-mark";
 import { CultureSession, type CultureSessionQuestion } from "@/components/culture/culture-session";
+import { buildMultipleChoiceOptions, type CultureMultipleChoicePrompt } from "@/lib/culture/multiple-choice";
 import { createClient } from "@/lib/supabase/server";
-import type { CultureCategory, CultureCollection } from "@/types/culture";
+import type { CultureCategory, CultureCollection, CulturePromptDirection, CulturePromptType } from "@/types/culture";
 
 export const dynamic = "force-dynamic";
 
@@ -17,20 +18,17 @@ type CultureItemForPrompt = {
 type CulturePromptRow = {
 	id: string;
 	item_id: string;
+	prompt_direction: CulturePromptDirection;
+	prompt_type: CulturePromptType;
 	question: string;
 	answer: string;
 	choices: string[];
 	culture_items: CultureItemForPrompt | CultureItemForPrompt[] | null;
 };
 
-type ActiveCulturePrompt = {
-	id: string;
+type ActiveCulturePrompt = CultureMultipleChoicePrompt & {
 	itemId: string;
 	question: string;
-	answer: string;
-	choices: string[];
-	category: CultureCategory;
-	collection: CultureCollection | null;
 };
 
 const CATEGORY_LABELS: Record<CultureCategory, string> = {
@@ -71,10 +69,6 @@ function getCollectionLabel(collection: CultureCollection | null): string | null
 	return COLLECTION_LABELS[collection] ?? collection.replaceAll("_", " ");
 }
 
-function normalizeChoice(choice: string): string {
-	return choice.trim().replace(/\s+/g, " ").toLocaleLowerCase("fr-FR");
-}
-
 function shuffle<T>(items: T[]): T[] {
 	const shuffledItems = [...items];
 
@@ -89,68 +83,6 @@ function shuffle<T>(items: T[]): T[] {
 	return shuffledItems;
 }
 
-function uniqueNonEmptyAnswers(answers: string[], excludedAnswer: string): string[] {
-	const seenAnswers = new Set([normalizeChoice(excludedAnswer)]);
-	const uniqueAnswers: string[] = [];
-
-	for (const answer of answers) {
-		const trimmedAnswer = answer.trim();
-		const normalizedAnswer = normalizeChoice(trimmedAnswer);
-
-		if (!trimmedAnswer || seenAnswers.has(normalizedAnswer)) {
-			continue;
-		}
-
-		seenAnswers.add(normalizedAnswer);
-		uniqueAnswers.push(trimmedAnswer);
-	}
-
-	return uniqueAnswers;
-}
-
-function buildChoices(prompt: ActiveCulturePrompt, allPrompts: ActiveCulturePrompt[]): string[] {
-	if (prompt.choices.length > 0) {
-		const storedWrongChoices = uniqueNonEmptyAnswers(prompt.choices, prompt.answer);
-
-		return shuffle([prompt.answer, ...shuffle(storedWrongChoices).slice(0, 3)]);
-	}
-
-	const wrongChoices: string[] = [];
-	const seenChoices = new Set([normalizeChoice(prompt.answer)]);
-
-	function addWrongChoices(candidates: ActiveCulturePrompt[]) {
-		for (const candidate of candidates) {
-			const candidateAnswer = candidate.answer.trim();
-			const normalizedAnswer = normalizeChoice(candidateAnswer);
-
-			if (!candidateAnswer || seenChoices.has(normalizedAnswer)) {
-				continue;
-			}
-
-			seenChoices.add(normalizedAnswer);
-			wrongChoices.push(candidateAnswer);
-
-			if (wrongChoices.length >= 3) {
-				return;
-			}
-		}
-	}
-
-	if (prompt.collection) {
-		addWrongChoices(shuffle(allPrompts.filter((candidate) => candidate.id !== prompt.id && candidate.collection === prompt.collection)));
-	}
-
-	if (wrongChoices.length < 3) {
-		addWrongChoices(shuffle(allPrompts.filter((candidate) => candidate.id !== prompt.id && candidate.category === prompt.category)));
-	}
-
-	if (wrongChoices.length < 3) {
-		addWrongChoices(shuffle(allPrompts.filter((candidate) => candidate.id !== prompt.id)));
-	}
-
-	return shuffle([prompt.answer, ...wrongChoices.slice(0, 3)]);
-}
-
 function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
 	const item = getPromptItem(prompt);
 
@@ -161,6 +93,8 @@ function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
 	return {
 		id: prompt.id,
 		itemId: prompt.item_id,
+		promptDirection: prompt.prompt_direction,
+		promptType: prompt.prompt_type,
 		question: prompt.question,
 		answer: prompt.answer,
 		choices: Array.isArray(prompt.choices) ? prompt.choices : [],
@@ -178,7 +112,7 @@ function buildSessionQuestions(prompts: ActiveCulturePrompt[]): CultureSessionQu
 		category: prompt.category,
 		categoryLabel: CATEGORY_LABELS[prompt.category],
 		collectionLabel: getCollectionLabel(prompt.collection),
-		choices: buildChoices(prompt, prompts),
+		choices: buildMultipleChoiceOptions(prompt, prompts),
 	}));
 }
 
@@ -192,7 +126,7 @@ export default async function CultureSessionPage() {
 
 	const { data: promptsData, error: promptsError } = await supabase
 		.from("culture_prompts")
-		.select("id,item_id,question,answer,choices,culture_items!inner(id,category,collection,title)")
+		.select("id,item_id,prompt_direction,prompt_type,question,answer,choices,culture_items!inner(id,category,collection,title)")
 		.eq("is_active", true)
 		.eq("culture_items.is_active", true)
 		.order("sort_order", { ascending: true });
