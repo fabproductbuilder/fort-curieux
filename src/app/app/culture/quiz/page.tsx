@@ -100,7 +100,12 @@ export default async function CultureQuizPage() {
 						<Link href="/app" className="inline-flex min-h-9 items-center text-lg font-semibold underline-offset-4 hover:underline">
 							Fort Curieux
 						</Link>
-						<p className="mt-2 text-sm text-ivory/58">Culture / Quiz oral</p>
+						<p className="mt-2 text-sm text-ivory/58">
+							<Link href="/app/culture" className="underline-offset-4 hover:text-accent hover:underline">
+								Culture
+							</Link>{" "}
+							/ Quiz oral
+						</p>
 					</div>
 					<Link href="/app/culture" className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto">
 						Retour Culture
@@ -109,7 +114,7 @@ export default async function CultureQuizPage() {
 
 				<div className="py-2 sm:py-6">
 					<h1 className="text-3xl font-semibold sm:text-5xl">Quiz oral</h1>
-					<p className="mt-5 text-base leading-7 text-ivory/72 sm:text-lg sm:leading-8">Une série de questions à lire à voix haute, seul ou entre amis.</p>
+					<p className="mt-5 text-base leading-7 text-ivory/72 sm:text-lg sm:leading-8">Un quiz de culture générale à jouer seul ou entre amis.</p>
 				</div>
 
 				{promptsError ? (

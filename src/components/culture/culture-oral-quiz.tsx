@@ -177,7 +177,7 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 		<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
 			<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
 			<h2 className="mt-2 text-2xl font-semibold">Préparer le quiz oral</h2>
-			<p className="mt-4 text-sm leading-6 text-night/68">Choisissez un volume et un univers, puis lancez une série de questions à lire à voix haute.</p>
+			<p className="mt-4 text-sm leading-6 text-night/68">Choisissez un nombre de questions et un univers, puis révélez les réponses une par une.</p>
 
 			<div className="mt-6 grid gap-6">
 				<fieldset>
