@@ -32,8 +32,6 @@ type ActiveCulturePrompt = {
 	collection: CultureCollection | null;
 };
 
-const SESSION_QUESTION_COUNT = 5;
-
 const CATEGORY_LABELS: Record<CultureCategory, string> = {
 	history: "Histoire",
 	geography: "Géographie",
@@ -171,7 +169,7 @@ function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
 }
 
 function buildSessionQuestions(prompts: ActiveCulturePrompt[]): CultureSessionQuestion[] {
-	const selectedPrompts = shuffle(prompts).slice(0, SESSION_QUESTION_COUNT);
+	const selectedPrompts = shuffle(prompts);
 
 	return selectedPrompts.map((prompt) => ({
 		id: prompt.id,
@@ -217,7 +215,7 @@ export default async function CultureSessionPage() {
 
 				<div className="py-2 sm:py-6">
 					<h1 className="text-3xl font-semibold sm:text-5xl">Session rapide</h1>
-					<p className="mt-5 text-base leading-7 text-ivory/72 sm:text-lg sm:leading-8">5 questions issues de toutes les catégories pour entretenir vos repères.</p>
+					<p className="mt-5 text-base leading-7 text-ivory/72 sm:text-lg sm:leading-8">Une routine courte pour réviser un mélange de questions issues de tous les univers.</p>
 				</div>
 
 				{promptsError ? (
