@@ -140,14 +140,24 @@ export default async function CulturePage() {
 					</p>
 				) : null}
 
-				<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
-					<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Session rapide</p>
-					<h2 className="mt-2 text-2xl font-semibold">Culture générale</h2>
-					<p className="mt-4 text-sm leading-6 text-night/68">Un mélange de questions issues de toutes les catégories pour entretenir votre culture générale régulièrement.</p>
-					<p className="mt-4 text-sm font-semibold text-night/56">5 questions issues de toutes les catégories.</p>
-					<Link href="/app/culture/session" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
-						Lancer une session rapide
-					</Link>
+				<section className="grid gap-3 md:grid-cols-2" aria-label="Modes Culture">
+					<article className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
+						<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Session rapide</p>
+						<h2 className="mt-2 text-2xl font-semibold">Révision personnelle</h2>
+						<p className="mt-4 text-sm leading-6 text-night/68">5 questions en choix multiples issues de toutes les catégories pour entretenir vos repères.</p>
+						<Link href="/app/culture/session" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
+							Lancer une session rapide
+						</Link>
+					</article>
+
+					<article className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
+						<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Quiz oral</p>
+						<h2 className="mt-2 text-2xl font-semibold">Culture à voix haute</h2>
+						<p className="mt-4 text-sm leading-6 text-night/68">Lancez une série de questions à lire à voix haute, seul ou entre amis.</p>
+						<Link href="/app/culture/quiz" className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md border border-night/15 px-4 text-sm font-semibold text-night transition hover:border-accent hover:text-accent sm:w-auto">
+							Lancer un quiz oral
+						</Link>
+					</article>
 				</section>
 
 				<section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Statistiques Culture">
