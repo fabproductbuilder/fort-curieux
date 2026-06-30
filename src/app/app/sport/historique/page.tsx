@@ -201,40 +201,20 @@ export default async function SportHistoryPage() {
 						{weeks.map((week) => {
 							const totalCount = week.occurrences.length;
 							const completedCount = countByStatus(week.occurrences, "completed");
-							const skippedCount = countByStatus(week.occurrences, "skipped");
-							const cancelledCount = countByStatus(week.occurrences, "cancelled");
 							const plannedCount = countByStatus(week.occurrences, "planned");
+							const remainingLabel = plannedCount > 0 ? `${plannedCount} à faire` : "semaine complétée";
 
 							return (
 								<article key={week.weekStartKey} className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
-									<div className="border-b border-night/10 pb-4">
-										<h2 className="text-2xl font-semibold">{formatWeekTitle(week)}</h2>
-										<div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
-											<div className="rounded-md border border-night/10 bg-white p-3">
-												<p className="text-2xl font-semibold">{totalCount}</p>
-												<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Activités</p>
-											</div>
-											<div className="rounded-md border border-night/10 bg-white p-3">
-												<p className="text-2xl font-semibold">{completedCount}</p>
-												<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Terminées</p>
-											</div>
-											<div className="rounded-md border border-night/10 bg-white p-3">
-												<p className="text-2xl font-semibold">{skippedCount}</p>
-												<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Non réalisées</p>
-											</div>
-											<div className="rounded-md border border-night/10 bg-white p-3">
-												<p className="text-2xl font-semibold">{cancelledCount}</p>
-												<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Annulées</p>
-											</div>
-											<div className="rounded-md border border-night/10 bg-white p-3">
-												<p className="text-2xl font-semibold">{plannedCount}</p>
-												<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Encore prévues</p>
-											</div>
-										</div>
+									<div className="border-b border-night/10 pb-3">
+										<h2 className="text-lg font-semibold sm:text-xl">{formatWeekTitle(week)}</h2>
+										<p className="mt-2 text-sm font-semibold text-night/74">
+											{totalCount} activité{totalCount > 1 ? "s" : ""} · {completedCount} terminée{completedCount > 1 ? "s" : ""} · {remainingLabel}
+										</p>
 									</div>
 
-									<details className="mt-4 group">
-										<summary className="flex min-h-12 cursor-pointer list-none items-center justify-between rounded-md border border-night/10 px-4 text-sm font-semibold transition hover:border-accent">
+									<details className="mt-3 group">
+										<summary className="flex min-h-11 cursor-pointer list-none items-center justify-between rounded-md border border-night/10 px-4 text-sm font-semibold transition hover:border-accent">
 											Voir le détail
 											<span aria-hidden="true" className="text-lg text-night/46 group-open:rotate-45">
 												+
