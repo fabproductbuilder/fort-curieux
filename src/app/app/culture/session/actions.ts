@@ -1,6 +1,8 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { markDailyActivity } from "@/lib/activity/daily-activity";
 import { createClient } from "@/lib/supabase/server";
 import type { CultureMasteryStatus, CultureReviewResult } from "@/types/culture";
 
@@ -139,6 +141,9 @@ export async function recordCultureAnswerAction(promptId: string, selectedAnswer
 			correctAnswer: prompt.answer,
 		};
 	}
+
+	await markDailyActivity(supabase, claimsData.claims.sub, "culture");
+	revalidatePath("/app");
 
 	return {
 		status: "success",

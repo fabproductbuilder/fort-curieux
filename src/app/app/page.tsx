@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { BrandMark } from "@/components/brand/brand-mark";
+import { getDailyActivitySummary } from "@/lib/activity/daily-activity";
 import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "./actions";
 
@@ -17,6 +18,8 @@ export default async function AppPage() {
 	}
 
 	const email = (data.claims as ClaimsWithEmail).email ?? "Adresse email indisponible";
+	const dailyActivity = await getDailyActivitySummary(supabase, data.claims.sub);
+	const streakLabel = `${dailyActivity.streakDays} jour${dailyActivity.streakDays > 1 ? "s" : ""}`;
 
 	return (
 		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">
@@ -28,6 +31,16 @@ export default async function AppPage() {
 
 				<div className="py-8">
 					<h1 className="text-3xl font-semibold sm:text-5xl">Votre espace est prêt.</h1>
+					<section className="mt-6 rounded-lg border border-ivory/15 bg-ivory/[0.04] p-4 sm:flex sm:items-center sm:justify-between sm:gap-5">
+						<div>
+							<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Série actuelle</p>
+							<p className="mt-2 text-3xl font-semibold">{streakLabel}</p>
+						</div>
+						<div className="mt-4 sm:mt-0 sm:max-w-md sm:text-right">
+							<p className="text-sm leading-6 text-ivory/68">Continuez aujourd&apos;hui avec une activité Sport et/ou une révision Culture.</p>
+							<p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-accent">Aujourd&apos;hui : {dailyActivity.hasActivityToday ? "fait" : "à faire"}</p>
+						</div>
+					</section>
 					<div className="mt-10 grid gap-4 sm:grid-cols-2">
 						<div className="rounded-lg border border-ivory/20 bg-ivory p-5 text-night">
 							<p className="text-2xl font-semibold">Sport</p>

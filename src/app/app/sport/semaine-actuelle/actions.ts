@@ -2,10 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { markDailyActivity } from "@/lib/activity/daily-activity";
 import { createClient } from "@/lib/supabase/server";
 import { parseSportTemplateForm } from "@/lib/sport/validation";
 import { formatDateForDatabase, getCurrentWeekMonday, getDateForIsoWeekDay } from "@/lib/sport/week";
-import type { MeasurementType, PerceivedEffort, SportActionState } from "@/types/sport";
+import type { MeasurementType, PerceivedEffort, SportActionState, SportOccurrenceStatus } from "@/types/sport";
 
 type SportTemplateForOccurrence = {
 	id: string;
@@ -25,6 +26,7 @@ type ExistingOccurrenceKey = {
 type SportOccurrenceForCompletion = {
 	id: string;
 	measurement_type: MeasurementType;
+	status: SportOccurrenceStatus;
 };
 
 function getOccurrenceKey(templateId: string | null, scheduledDate: string): string {
@@ -126,7 +128,7 @@ async function getAuthenticatedUserId(): Promise<string | null> {
 
 async function getOccurrenceForUser(id: string, userId: string): Promise<SportOccurrenceForCompletion | null> {
 	const supabase = await createClient();
-	const { data, error } = await supabase.from("sport_occurrences").select("id,measurement_type").eq("id", id).eq("user_id", userId).maybeSingle();
+	const { data, error } = await supabase.from("sport_occurrences").select("id,measurement_type,status").eq("id", id).eq("user_id", userId).maybeSingle();
 
 	if (error || !data) {
 		return null;
@@ -316,6 +318,11 @@ export async function completeSportOccurrenceAction(_state: SportActionState, fo
 
 	if (error) {
 		return failure("L'activité n'a pas pu être terminée. Vérifiez les champs puis réessayez.");
+	}
+
+	if (occurrence.status !== "completed") {
+		await markDailyActivity(supabase, userId, "sport");
+		revalidatePath("/app");
 	}
 
 	revalidatePath("/app/sport/semaine-actuelle");
