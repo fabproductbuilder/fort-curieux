@@ -56,6 +56,7 @@ export default async function SportPage() {
 	const totalCount = occurrences.length;
 	const completedCount = occurrences.filter((occurrence) => occurrence.status === "completed").length;
 	const plannedCount = occurrences.filter((occurrence) => occurrence.status === "planned").length;
+	const remainingLabel = plannedCount > 0 ? `${plannedCount} à faire` : "semaine complétée";
 	const nextPlannedOccurrence = getNextPlannedOccurrence(occurrences, todayKey);
 
 	return (
@@ -99,7 +100,7 @@ export default async function SportPage() {
 						) : (
 							<>
 								<p className="mt-4 text-sm font-semibold text-night">
-									{totalCount} activité{totalCount > 1 ? "s" : ""} · {completedCount} terminée{completedCount > 1 ? "s" : ""} · {plannedCount} prévue{plannedCount > 1 ? "s" : ""}
+									{totalCount} activité{totalCount > 1 ? "s" : ""} · {completedCount} terminée{completedCount > 1 ? "s" : ""} · {remainingLabel}
 								</p>
 								{nextPlannedOccurrence ? (
 									<p className="mt-2 text-sm leading-6 text-night/66">
