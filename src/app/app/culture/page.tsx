@@ -181,7 +181,7 @@ export default async function CulturePage() {
 							</div>
 							<div className="rounded-lg border border-ivory/15 bg-ivory/[0.03] p-4">
 								<p className="text-xl font-semibold">{primaryWorkedCategory?.label ?? "—"}</p>
-								<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Univers principal</p>
+								<p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-ivory/52">Univers le plus travaillé</p>
 							</div>
 						</div>
 					) : (
