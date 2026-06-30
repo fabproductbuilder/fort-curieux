@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/brand/brand-mark";
-import { CultureSession, type CultureSessionQuestion } from "@/components/culture/culture-session";
-import { buildMultipleChoiceOptions, type CultureMultipleChoicePrompt } from "@/lib/culture/multiple-choice";
+import { CultureSession, type CultureSessionPrompt } from "@/components/culture/culture-session";
 import { createClient } from "@/lib/supabase/server";
 import type { CultureCategory, CultureCollection, CulturePromptDirection, CulturePromptType } from "@/types/culture";
 
@@ -24,11 +23,6 @@ type CulturePromptRow = {
 	answer: string;
 	choices: string[];
 	culture_items: CultureItemForPrompt | CultureItemForPrompt[] | null;
-};
-
-type ActiveCulturePrompt = CultureMultipleChoicePrompt & {
-	itemId: string;
-	question: string;
 };
 
 const CATEGORY_LABELS: Record<CultureCategory, string> = {
@@ -69,21 +63,7 @@ function getCollectionLabel(collection: CultureCollection | null): string | null
 	return COLLECTION_LABELS[collection] ?? collection.replaceAll("_", " ");
 }
 
-function shuffle<T>(items: T[]): T[] {
-	const shuffledItems = [...items];
-
-	for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
-		const swapIndex = Math.floor(Math.random() * (index + 1));
-		const currentItem = shuffledItems[index];
-
-		shuffledItems[index] = shuffledItems[swapIndex];
-		shuffledItems[swapIndex] = currentItem;
-	}
-
-	return shuffledItems;
-}
-
-function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
+function toSessionPrompt(prompt: CulturePromptRow): CultureSessionPrompt | null {
 	const item = getPromptItem(prompt);
 
 	if (!item) {
@@ -92,28 +72,16 @@ function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
 
 	return {
 		id: prompt.id,
-		itemId: prompt.item_id,
 		promptDirection: prompt.prompt_direction,
 		promptType: prompt.prompt_type,
 		question: prompt.question,
 		answer: prompt.answer,
 		choices: Array.isArray(prompt.choices) ? prompt.choices : [],
 		category: item.category,
+		categoryLabel: CATEGORY_LABELS[item.category],
 		collection: item.collection,
+		collectionLabel: getCollectionLabel(item.collection),
 	};
-}
-
-function buildSessionQuestions(prompts: ActiveCulturePrompt[]): CultureSessionQuestion[] {
-	const selectedPrompts = shuffle(prompts);
-
-	return selectedPrompts.map((prompt) => ({
-		id: prompt.id,
-		question: prompt.question,
-		category: prompt.category,
-		categoryLabel: CATEGORY_LABELS[prompt.category],
-		collectionLabel: getCollectionLabel(prompt.collection),
-		choices: buildMultipleChoiceOptions(prompt, prompts),
-	}));
 }
 
 export default async function CultureSessionPage() {
@@ -131,8 +99,7 @@ export default async function CultureSessionPage() {
 		.eq("culture_items.is_active", true)
 		.order("sort_order", { ascending: true });
 
-	const prompts = promptsError ? [] : ((promptsData ?? []) as CulturePromptRow[]).map(toActivePrompt).filter((prompt): prompt is ActiveCulturePrompt => Boolean(prompt));
-	const questions = buildSessionQuestions(prompts);
+	const questions = promptsError ? [] : ((promptsData ?? []) as CulturePromptRow[]).map(toSessionPrompt).filter((prompt): prompt is CultureSessionPrompt => Boolean(prompt));
 
 	return (
 		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">

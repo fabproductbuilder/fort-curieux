@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BrandMark } from "@/components/brand/brand-mark";
-import { CultureTargetedReview, type CultureTargetedReviewQuestion } from "@/components/culture/culture-targeted-review";
-import { buildMultipleChoiceOptions, type CultureMultipleChoicePrompt } from "@/lib/culture/multiple-choice";
+import { CultureTargetedReview, type CultureTargetedReviewPrompt } from "@/components/culture/culture-targeted-review";
 import { createClient } from "@/lib/supabase/server";
 import { getTargetedCultureBlock, isTargetedCultureCollection, TARGETED_CULTURE_BLOCKS, type TargetedCultureCollection } from "@/lib/culture/targeted-reviews";
 import type { CultureCategory, CultureCollection, CulturePromptDirection, CulturePromptType } from "@/types/culture";
@@ -33,12 +32,6 @@ type CulturePromptRow = {
 	culture_items: CultureItemForPrompt | CultureItemForPrompt[] | null;
 };
 
-type ActiveCulturePrompt = CultureMultipleChoicePrompt & {
-	itemId: string;
-	question: string;
-	collection: TargetedCultureCollection;
-};
-
 function getPromptItem(prompt: CulturePromptRow): CultureItemForPrompt | null {
 	return Array.isArray(prompt.culture_items) ? prompt.culture_items[0] ?? null : prompt.culture_items;
 }
@@ -49,21 +42,7 @@ function getInitialCollection(bloc: string | string[] | undefined): TargetedCult
 	return isTargetedCultureCollection(requestedBloc) ? requestedBloc : TARGETED_CULTURE_BLOCKS[0].collection;
 }
 
-function shuffle<T>(items: T[]): T[] {
-	const shuffledItems = [...items];
-
-	for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
-		const swapIndex = Math.floor(Math.random() * (index + 1));
-		const currentItem = shuffledItems[index];
-
-		shuffledItems[index] = shuffledItems[swapIndex];
-		shuffledItems[swapIndex] = currentItem;
-	}
-
-	return shuffledItems;
-}
-
-function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
+function toTargetedPrompt(prompt: CulturePromptRow): CultureTargetedReviewPrompt | null {
 	const item = getPromptItem(prompt);
 
 	if (!item || item.category !== "geography" || !isTargetedCultureCollection(item.collection)) {
@@ -72,7 +51,6 @@ function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
 
 	return {
 		id: prompt.id,
-		itemId: prompt.item_id,
 		promptDirection: prompt.prompt_direction,
 		promptType: prompt.prompt_type,
 		question: prompt.question,
@@ -80,21 +58,8 @@ function toActivePrompt(prompt: CulturePromptRow): ActiveCulturePrompt | null {
 		choices: Array.isArray(prompt.choices) ? prompt.choices : [],
 		category: item.category,
 		collection: item.collection,
+		collectionLabel: getTargetedCultureBlock(item.collection).label,
 	};
-}
-
-function buildTargetedQuestions(prompts: ActiveCulturePrompt[]): CultureTargetedReviewQuestion[] {
-	const selectedPrompts = shuffle(prompts);
-
-	return selectedPrompts.map((prompt) => ({
-		id: prompt.id,
-		question: prompt.question,
-		collection: prompt.collection,
-		collectionLabel: getTargetedCultureBlock(prompt.collection).label,
-		promptDirection: prompt.promptDirection,
-		promptType: prompt.promptType,
-		choices: buildMultipleChoiceOptions(prompt, prompts),
-	}));
 }
 
 export default async function CultureTargetedPage({ searchParams }: CultureTargetedPageProps) {
@@ -115,8 +80,7 @@ export default async function CultureTargetedPage({ searchParams }: CultureTarge
 		.eq("culture_items.category", "geography")
 		.order("sort_order", { ascending: true });
 
-	const prompts = promptsError ? [] : ((promptsData ?? []) as CulturePromptRow[]).map(toActivePrompt).filter((prompt): prompt is ActiveCulturePrompt => Boolean(prompt));
-	const questions = buildTargetedQuestions(prompts);
+	const questions = promptsError ? [] : ((promptsData ?? []) as CulturePromptRow[]).map(toTargetedPrompt).filter((prompt): prompt is CultureTargetedReviewPrompt => Boolean(prompt));
 
 	return (
 		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">

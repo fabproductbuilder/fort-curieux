@@ -4,10 +4,17 @@ import { useRef, useState } from "react";
 import { recordCultureAnswerAction } from "@/app/app/culture/session/actions";
 import { CultureUniverseSelector } from "@/components/culture/culture-universe-selector";
 import { getCultureCategorySelectionLabel } from "@/lib/culture/categories";
+import { buildMultipleChoiceOptions, type CultureMultipleChoicePrompt } from "@/lib/culture/multiple-choice";
 import { filterCultureQuestionsByCategories, selectBalancedCultureQuestions } from "@/lib/culture/question-selection";
 import type { CultureCategory } from "@/types/culture";
 
-export type CultureSessionQuestion = {
+export type CultureSessionPrompt = CultureMultipleChoicePrompt & {
+	question: string;
+	categoryLabel: string;
+	collectionLabel: string | null;
+};
+
+type CultureSessionQuestion = {
 	id: string;
 	question: string;
 	category: CultureCategory;
@@ -23,12 +30,23 @@ type AnswerFeedback = {
 };
 
 type CultureSessionProps = {
-	questions: CultureSessionQuestion[];
+	questions: CultureSessionPrompt[];
 };
 
 const SESSION_QUESTION_OPTIONS = [10, 20] as const;
 
 type SessionQuestionCount = (typeof SESSION_QUESTION_OPTIONS)[number];
+
+function buildPlayableQuestion(prompt: CultureSessionPrompt, allPrompts: CultureSessionPrompt[]): CultureSessionQuestion {
+	return {
+		id: prompt.id,
+		question: prompt.question,
+		category: prompt.category,
+		categoryLabel: prompt.categoryLabel,
+		collectionLabel: prompt.collectionLabel,
+		choices: buildMultipleChoiceOptions(prompt, allPrompts),
+	};
+}
 
 export function CultureSession({ questions }: CultureSessionProps) {
 	const [selectedQuestionCount, setSelectedQuestionCount] = useState<SessionQuestionCount>(10);
@@ -51,7 +69,9 @@ export function CultureSession({ questions }: CultureSessionProps) {
 	const isLimitedByAvailableQuestions = availableQuestions.length > 0 && availableQuestions.length < selectedQuestionCount;
 
 	function handleStartSession() {
-		setSessionQuestions(selectBalancedCultureQuestions(questions, selectedCategories, selectedQuestionCount));
+		const selectedPrompts = selectBalancedCultureQuestions(questions, selectedCategories, selectedQuestionCount);
+
+		setSessionQuestions(selectedPrompts.map((prompt) => buildPlayableQuestion(prompt, questions)));
 		setCurrentIndex(0);
 		setFeedbackByQuestionId({});
 		setPendingChoice(null);

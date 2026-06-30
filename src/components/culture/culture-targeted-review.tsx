@@ -11,9 +11,16 @@ import {
 	type TargetedCultureCollection,
 	type TargetedCultureDirection,
 } from "@/lib/culture/targeted-reviews";
+import { buildMultipleChoiceOptions, type CultureMultipleChoicePrompt } from "@/lib/culture/multiple-choice";
 import type { CulturePromptDirection, CulturePromptType } from "@/types/culture";
 
-export type CultureTargetedReviewQuestion = {
+export type CultureTargetedReviewPrompt = CultureMultipleChoicePrompt & {
+	question: string;
+	collection: TargetedCultureCollection;
+	collectionLabel: string;
+};
+
+type CultureTargetedReviewQuestion = {
 	id: string;
 	question: string;
 	collection: TargetedCultureCollection;
@@ -32,7 +39,7 @@ type AnswerFeedback = {
 type QuestionAmount = "10" | "20" | "all";
 
 type CultureTargetedReviewProps = {
-	questions: CultureTargetedReviewQuestion[];
+	questions: CultureTargetedReviewPrompt[];
 	initialCollection: TargetedCultureCollection;
 };
 
@@ -64,6 +71,18 @@ function getQuestionTargetCount(amount: QuestionAmount, availableQuestionCount: 
 	return Math.min(Number(amount), availableQuestionCount);
 }
 
+function buildPlayableQuestion(prompt: CultureTargetedReviewPrompt, availablePrompts: CultureTargetedReviewPrompt[]): CultureTargetedReviewQuestion {
+	return {
+		id: prompt.id,
+		question: prompt.question,
+		collection: prompt.collection,
+		collectionLabel: prompt.collectionLabel,
+		promptDirection: prompt.promptDirection,
+		promptType: prompt.promptType,
+		choices: buildMultipleChoiceOptions(prompt, availablePrompts),
+	};
+}
+
 export function CultureTargetedReview({ questions, initialCollection }: CultureTargetedReviewProps) {
 	const [selectedCollection, setSelectedCollection] = useState<TargetedCultureCollection>(initialCollection);
 	const [selectedDirection, setSelectedDirection] = useState<TargetedCultureDirection>("all");
@@ -93,7 +112,9 @@ export function CultureTargetedReview({ questions, initialCollection }: CultureT
 	}
 
 	function handleStartReview() {
-		setSessionQuestions(shuffle(availableQuestions).slice(0, targetCount));
+		const selectedPrompts = shuffle(availableQuestions).slice(0, targetCount);
+
+		setSessionQuestions(selectedPrompts.map((prompt) => buildPlayableQuestion(prompt, availableQuestions)));
 		setCurrentIndex(0);
 		setFeedbackByQuestionId({});
 		setPendingChoice(null);
