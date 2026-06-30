@@ -55,8 +55,6 @@ export default async function SportPage() {
 	const occurrences = occurrencesError ? [] : ((occurrencesData ?? []) as SportWeekOccurrenceRow[]);
 	const totalCount = occurrences.length;
 	const completedCount = occurrences.filter((occurrence) => occurrence.status === "completed").length;
-	const skippedCount = occurrences.filter((occurrence) => occurrence.status === "skipped").length;
-	const cancelledCount = occurrences.filter((occurrence) => occurrence.status === "cancelled").length;
 	const plannedCount = occurrences.filter((occurrence) => occurrence.status === "planned").length;
 	const nextPlannedOccurrence = getNextPlannedOccurrence(occurrences, todayKey);
 
@@ -80,12 +78,9 @@ export default async function SportPage() {
 
 				<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
 					<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
-						<div className="flex flex-col gap-2 border-b border-night/10 pb-4 sm:flex-row sm:items-baseline sm:justify-between">
-							<div>
-								<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Cette semaine</p>
-								<h2 className="mt-2 text-2xl font-semibold">{totalCount} activité{totalCount > 1 ? "s" : ""} cette semaine</h2>
-							</div>
-							<p className="text-sm text-night/56">
+						<div className="flex flex-col gap-1.5 border-b border-night/10 pb-3 sm:flex-row sm:items-baseline sm:justify-between">
+							<h2 className="text-lg font-semibold">Cette semaine</h2>
+							<p className="text-xs text-night/52">
 								Du {formatFrenchDate(weekDays[0])} au {formatFrenchDate(weekDays[6])}
 							</p>
 						</div>
@@ -103,42 +98,24 @@ export default async function SportPage() {
 							</div>
 						) : (
 							<>
-								<div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-									<div className="rounded-md border border-night/10 bg-white p-3">
-										<p className="text-2xl font-semibold">{completedCount}</p>
-										<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Terminées</p>
-									</div>
-									<div className="rounded-md border border-night/10 bg-white p-3">
-										<p className="text-2xl font-semibold">{skippedCount}</p>
-										<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Non réalisées</p>
-									</div>
-									<div className="rounded-md border border-night/10 bg-white p-3">
-										<p className="text-2xl font-semibold">{cancelledCount}</p>
-										<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Annulées</p>
-									</div>
-									<div className="rounded-md border border-night/10 bg-white p-3">
-										<p className="text-2xl font-semibold">{plannedCount}</p>
-										<p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-night/46">Encore prévues</p>
-									</div>
-								</div>
-
-								<div className="mt-5 rounded-md border border-night/10 bg-night/[0.03] p-4">
-									{nextPlannedOccurrence ? (
-										<p className="text-sm leading-6 text-night/68">
-											<span className="font-semibold text-night">Prochaine activité :</span> {nextPlannedOccurrence.name_snapshot} — {getDayLabel(nextPlannedOccurrence.scheduled_date, todayKey, weekDays)}
-										</p>
-									) : (
-										<p className="text-sm leading-6 text-night/68">Toutes les activités maintenues sont traitées pour cette semaine.</p>
-									)}
-								</div>
+								<p className="mt-4 text-sm font-semibold text-night">
+									{totalCount} activité{totalCount > 1 ? "s" : ""} · {completedCount} terminée{completedCount > 1 ? "s" : ""} · {plannedCount} prévue{plannedCount > 1 ? "s" : ""}
+								</p>
+								{nextPlannedOccurrence ? (
+									<p className="mt-2 text-sm leading-6 text-night/66">
+										<span className="font-semibold text-night">Prochaine :</span> {nextPlannedOccurrence.name_snapshot} {getDayLabel(nextPlannedOccurrence.scheduled_date, todayKey, weekDays)}
+									</p>
+								) : (
+									<p className="mt-2 text-sm leading-6 text-night/66">Toutes les activités maintenues sont traitées pour cette semaine.</p>
+								)}
+								<Link href="/app/sport/semaine-actuelle" className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
+									Voir ma semaine actuelle
+								</Link>
 							</>
 						)}
 					</section>
 
 					<nav className="grid gap-3" aria-label="Actions Sport">
-						<Link href="/app/sport/semaine-actuelle" className="inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]">
-							Voir ma semaine actuelle
-						</Link>
 						<Link href="/app/sport/semaine-type" className="inline-flex h-12 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent">
 							Modifier ma semaine type
 						</Link>
