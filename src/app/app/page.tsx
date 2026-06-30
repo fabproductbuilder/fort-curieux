@@ -31,17 +31,17 @@ export default async function AppPage() {
 
 				<div className="py-8">
 					<h1 className="text-3xl font-semibold sm:text-5xl">Votre espace est prêt.</h1>
-					<section className="mt-6 rounded-lg border border-ivory/15 bg-ivory/[0.04] p-4 sm:flex sm:items-center sm:justify-between sm:gap-5">
-						<div>
-							<p className="text-sm font-semibold uppercase tracking-[0.18em] text-ivory/44">Série actuelle</p>
-							<p className="mt-2 text-3xl font-semibold">{streakLabel}</p>
-						</div>
-						<div className="mt-4 sm:mt-0 sm:max-w-md sm:text-right">
-							<p className="text-sm leading-6 text-ivory/68">Continuez aujourd&apos;hui avec une activité Sport et/ou une révision Culture.</p>
-							<p className="mt-2 text-xs font-semibold uppercase tracking-[0.14em] text-accent">Aujourd&apos;hui : {dailyActivity.hasActivityToday ? "fait" : "à faire"}</p>
-						</div>
+					<section className="mt-4 rounded-md border border-ivory/15 bg-ivory/[0.035] px-3 py-2.5 sm:px-4">
+						<p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-ivory/82">
+							<span>Série actuelle</span>
+							<span className="text-ivory/36">·</span>
+							<span>{streakLabel}</span>
+							<span className="text-ivory/36">·</span>
+							<span className="text-accent">Aujourd’hui : {dailyActivity.hasActivityToday ? "fait" : "à faire"}</span>
+						</p>
+						<p className="mt-1 text-xs leading-5 text-ivory/58">Continuez aujourd’hui avec une activité Sport et/ou une révision Culture.</p>
 					</section>
-					<div className="mt-10 grid gap-4 sm:grid-cols-2">
+					<div className="mt-6 grid gap-4 sm:grid-cols-2">
 						<div className="rounded-lg border border-ivory/20 bg-ivory p-5 text-night">
 							<p className="text-2xl font-semibold">Sport</p>
 							<p className="mt-4 text-sm leading-6 text-night/64">Organiser votre semaine sportive et consulter ce qui est prévu maintenant.</p>
