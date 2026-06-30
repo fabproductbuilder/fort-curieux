@@ -59,8 +59,8 @@ export default async function SemaineActuellePage() {
 
 	return (
 		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">
-			<section className="mx-auto flex w-full max-w-7xl flex-col gap-8 sm:gap-10">
-				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
+			<section className="mx-auto flex w-full max-w-7xl flex-col gap-6 sm:gap-10">
+				<header className="flex flex-col gap-3 border-b border-ivory/15 pb-4 sm:flex-row sm:items-center sm:justify-between sm:pb-5">
 					<div>
 						<BrandMark href="/app" />
 						<p className="mt-2 text-sm text-ivory/58">
@@ -70,24 +70,13 @@ export default async function SemaineActuellePage() {
 							· Semaine actuelle
 						</p>
 					</div>
-					<Link href="/app" className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto">
+					<Link href="/app" className="inline-flex h-10 w-fit items-center justify-center rounded-md border border-ivory/25 px-3 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:h-11 sm:px-4">
 						Mon espace
 					</Link>
 				</header>
 
-				<div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
-					<div className="max-w-3xl">
-						<h1 className="text-3xl font-semibold sm:text-5xl">Semaine actuelle</h1>
-						<p className="mt-4 text-base leading-7 text-ivory/72 sm:mt-5 sm:text-lg sm:leading-8">
-							Votre semaine type sert de base. Vous pouvez ensuite indiquer ce que vous avez réellement fait.
-						</p>
-					</div>
-					<div className="rounded-lg border border-ivory/15 p-4 text-sm leading-6 text-ivory/72 sm:p-5">
-						<p className="font-semibold text-ivory">Semaine type</p>
-						<p className="mt-2">Votre organisation habituelle.</p>
-						<p className="mt-4 font-semibold text-ivory">Semaine actuelle</p>
-						<p className="mt-2">Les activités prévues cette semaine et vos résultats réels.</p>
-					</div>
+				<div className="max-w-3xl">
+					<h1 className="text-3xl font-semibold sm:text-5xl">Semaine actuelle</h1>
 				</div>
 
 				<CurrentWeekManager

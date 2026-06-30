@@ -61,41 +61,50 @@ export function RestTimer() {
 	}
 
 	return (
-		<section className="rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-5">
-			<p className="text-xs font-semibold uppercase tracking-[0.18em] text-night/44">Outils rapides</p>
-			<div className="mt-3 flex items-end justify-between gap-4">
-				<h2 className="text-lg font-semibold sm:text-xl">Timer de repos</h2>
-				<p className="tabular-nums text-3xl font-semibold leading-none text-night sm:text-4xl" aria-live="polite">
-					{formatTime(remainingSeconds)}
-				</p>
-			</div>
+		<details className="group rounded-lg border border-ivory/15 bg-ivory text-night">
+			<summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 outline-none transition hover:text-accent focus-visible:ring-2 focus-visible:ring-accent/25 sm:px-5 [&::-webkit-details-marker]:hidden">
+				<span>
+					<span className="block text-xs font-semibold uppercase tracking-[0.16em] text-night/44">Outils rapides</span>
+					<span className="mt-1 block text-base font-semibold text-night">Timer de repos</span>
+				</span>
+				<span className="flex items-center gap-3">
+					<span className="tabular-nums text-lg font-semibold leading-none text-night" aria-live="polite">
+						{formatTime(remainingSeconds)}
+					</span>
+					<span aria-hidden="true" className="text-xl leading-none text-night/44 transition group-open:rotate-45">
+						+
+					</span>
+				</span>
+			</summary>
 
-			<div className="mt-4 grid grid-cols-4 gap-2 sm:grid-cols-2">
-				{REST_DURATIONS.map((duration) => (
-					<button
-						key={duration.seconds}
-						type="button"
-						onClick={() => selectDuration(duration.seconds)}
-						className={`h-11 rounded-md border px-2 text-xs font-semibold transition sm:px-3 sm:text-sm ${
-							selectedSeconds === duration.seconds ? "border-accent bg-accent/18 text-night" : "border-night/15 text-night/70 hover:border-accent hover:text-night"
-						}`}
-					>
-						{duration.label}
+			<div className="border-t border-night/10 px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
+				<div className="grid grid-cols-4 gap-2 sm:grid-cols-2">
+					{REST_DURATIONS.map((duration) => (
+						<button
+							key={duration.seconds}
+							type="button"
+							onClick={() => selectDuration(duration.seconds)}
+							className={`h-11 rounded-md border px-2 text-xs font-semibold transition sm:px-3 sm:text-sm ${
+								selectedSeconds === duration.seconds ? "border-accent bg-accent/18 text-night" : "border-night/15 text-night/70 hover:border-accent hover:text-night"
+							}`}
+						>
+							{duration.label}
+						</button>
+					))}
+				</div>
+
+				<div className="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+					<button type="button" onClick={startTimer} className="h-11 rounded-md bg-accent px-3 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:px-4">
+						Démarrer
 					</button>
-				))}
+					<button type="button" onClick={pauseTimer} className="h-11 rounded-md border border-night/15 px-3 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:px-4">
+						Pause
+					</button>
+					<button type="button" onClick={resetTimer} className="col-span-2 h-11 rounded-md border border-night/15 px-3 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:col-span-1 sm:px-4">
+						Réinitialiser
+					</button>
+				</div>
 			</div>
-
-			<div className="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-				<button type="button" onClick={startTimer} className="h-11 rounded-md bg-accent px-3 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:px-4">
-					Démarrer
-				</button>
-				<button type="button" onClick={pauseTimer} className="h-11 rounded-md border border-night/15 px-3 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:px-4">
-					Pause
-				</button>
-				<button type="button" onClick={resetTimer} className="col-span-2 h-11 rounded-md border border-night/15 px-3 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent sm:col-span-1 sm:px-4">
-					Réinitialiser
-				</button>
-			</div>
-		</section>
+		</details>
 	);
 }

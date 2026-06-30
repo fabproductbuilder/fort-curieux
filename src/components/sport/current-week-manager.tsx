@@ -83,7 +83,7 @@ function GenerateWeekForm({
 	const className =
 		variant === "primary"
 			? "inline-flex h-11 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
-			: "inline-flex h-11 w-full items-center justify-center rounded-md border border-night/15 px-4 text-sm font-semibold text-night/72 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto";
+			: "inline-flex h-10 w-full items-center justify-center rounded-md border border-night/15 px-3 text-xs font-semibold text-night/66 transition hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:px-4 sm:text-sm";
 
 	useEffect(() => {
 		if (!state.message) {
@@ -645,8 +645,8 @@ export function CurrentWeekManager({
 				</p>
 			) : null}
 
-			<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-				<div className="order-2 space-y-5 lg:order-1">
+			<div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+				<div className="order-1 space-y-4 lg:space-y-5">
 					{!hasTemplates && !hasOccurrences ? (
 						<div className="rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:p-6">
 							<h2 className="text-xl font-semibold sm:text-2xl">Créez d&apos;abord votre semaine type.</h2>
@@ -673,14 +673,16 @@ export function CurrentWeekManager({
 
 					{hasOccurrences ? (
 						<>
-							<div className="flex flex-col gap-4 rounded-lg border border-ivory/15 bg-ivory p-4 text-night sm:flex-row sm:items-center sm:justify-between sm:p-5">
-								<div>
-									<p className="text-lg font-semibold">Activités de la semaine</p>
-									<p className="mt-1 text-sm leading-6 text-night/64">
-										Du {weekStartLabel} au {weekEndLabel}.
-									</p>
+							<div className="rounded-lg border border-ivory/15 bg-ivory p-3 text-night sm:p-4">
+								<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+									<div>
+										<p className="text-lg font-semibold">Activités de la semaine</p>
+										<p className="mt-1 text-sm leading-6 text-night/64">
+											Du {weekStartLabel} au {weekEndLabel}.
+										</p>
+									</div>
+									<GenerateWeekForm onMessage={handleMessage} variant="secondary" />
 								</div>
-								<GenerateWeekForm onMessage={handleMessage} variant="secondary" />
 							</div>
 
 							<div className="grid gap-4">
@@ -711,7 +713,7 @@ export function CurrentWeekManager({
 					) : null}
 				</div>
 
-				<div className="order-1 space-y-5 lg:order-2 lg:sticky lg:top-8">
+				<div className="order-2 space-y-3 lg:sticky lg:top-8 lg:space-y-5">
 					<RestTimer />
 					{hasTemplates || hasOccurrences ? <CreateOccurrenceForm onMessage={handleMessage} weekDays={weekDays} /> : null}
 				</div>
