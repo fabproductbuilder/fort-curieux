@@ -5,11 +5,11 @@ import { createClient } from "@/lib/supabase/server";
 const pillars = [
 	{
 		title: "Sport",
-		description: "Composez votre semaine type, préparez votre semaine actuelle et notez ce que vous avez réellement fait.",
+		description: "Préparez votre semaine, suivez vos séances et notez ce que vous avez réellement fait.",
 	},
 	{
 		title: "Culture",
-		description: "Entretenez vos repères en histoire, géographie, sciences et musique grâce à des sessions courtes et régulières.",
+		description: "Révisez vos repères en histoire, géographie, musique, cinéma et inventions grâce à des sessions courtes et régulières.",
 	},
 ];
 
@@ -53,10 +53,10 @@ export default async function Home() {
 				<div className="py-16 sm:py-24">
 					<h1 className="max-w-3xl text-5xl font-semibold leading-tight sm:text-6xl">Fort Curieux</h1>
 					<p className="mt-6 max-w-2xl text-xl leading-8 text-ivory/78 sm:text-2xl">
-						Entraînez votre corps. Entretenez votre culture.
+						Devenez plus fort, plus curieux, jour après jour.
 					</p>
 					<p className="mt-6 max-w-2xl text-base leading-7 text-ivory/66 sm:text-lg sm:leading-8">
-						Une web app personnelle pour suivre vos activités sportives et entretenir vos repères culturels avec régularité.
+						Une web app personnelle pour construire une routine simple : quelques minutes pour bouger, apprendre, et progresser avec régularité.
 					</p>
 				</div>
 
