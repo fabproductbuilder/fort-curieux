@@ -47,6 +47,8 @@ const COLLECTION_LABELS: Partial<Record<CultureCollection, string>> = {
 	cinema_actor_links: "Acteurs et films",
 };
 
+const CULTURE_PROMPTS_PAGE_SIZE = 1000;
+
 function getPromptItem(prompt: CulturePromptRow): CultureItemForPrompt | null {
 	return Array.isArray(prompt.culture_items) ? prompt.culture_items[0] ?? null : prompt.culture_items;
 }
@@ -76,6 +78,34 @@ function toQuizQuestion(prompt: CulturePromptRow): CultureOralQuizQuestion | nul
 	};
 }
 
+async function fetchActiveCulturePrompts(supabase: Awaited<ReturnType<typeof createClient>>) {
+	const prompts: CulturePromptRow[] = [];
+
+	for (let page = 0; ; page += 1) {
+		const from = page * CULTURE_PROMPTS_PAGE_SIZE;
+		const to = from + CULTURE_PROMPTS_PAGE_SIZE - 1;
+		const { data, error } = await supabase
+			.from("culture_prompts")
+			.select("id,question,answer,culture_items!inner(id,category,collection,title)")
+			.eq("is_active", true)
+			.eq("culture_items.is_active", true)
+			.order("sort_order", { ascending: true })
+			.order("id", { ascending: true })
+			.range(from, to);
+
+		if (error) {
+			return { data: prompts, error };
+		}
+
+		const batch = (data ?? []) as CulturePromptRow[];
+		prompts.push(...batch);
+
+		if (batch.length < CULTURE_PROMPTS_PAGE_SIZE) {
+			return { data: prompts, error: null };
+		}
+	}
+}
+
 export default async function CultureQuizPage() {
 	const supabase = await createClient();
 	const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
@@ -84,13 +114,7 @@ export default async function CultureQuizPage() {
 		redirect("/connexion?message=connexion_requise");
 	}
 
-	const { data: promptsData, error: promptsError } = await supabase
-		.from("culture_prompts")
-		.select("id,question,answer,culture_items!inner(id,category,collection,title)")
-		.eq("is_active", true)
-		.eq("culture_items.is_active", true)
-		.order("sort_order", { ascending: true });
-
+	const { data: promptsData, error: promptsError } = await fetchActiveCulturePrompts(supabase);
 	const questions = promptsError ? [] : ((promptsData ?? []) as CulturePromptRow[]).map(toQuizQuestion).filter((question): question is CultureOralQuizQuestion => Boolean(question));
 
 	return (

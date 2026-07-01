@@ -43,6 +43,7 @@ const CATEGORY_DETAILS: Record<CultureCategory, { label: string }> = {
 };
 
 const CATEGORY_ORDER: CultureCategory[] = ["history", "geography", "inventions", "music", "cinema"];
+const CULTURE_PROMPTS_PAGE_SIZE = 1000;
 
 function getPromptCategory(prompt: CulturePromptSummaryRow): CultureCategory | null {
 	const item = Array.isArray(prompt.culture_items) ? prompt.culture_items[0] : prompt.culture_items;
@@ -54,6 +55,34 @@ function isQuestionToReview(progress: CultureProgressSummaryRow): boolean {
 	return progress.incorrect_count > 0 || progress.last_result === "incorrect" || progress.mastery_status === "new" || progress.mastery_status === "discovered" || progress.mastery_status === "review";
 }
 
+async function fetchCulturePromptSummaries(supabase: Awaited<ReturnType<typeof createClient>>) {
+	const prompts: CulturePromptSummaryRow[] = [];
+
+	for (let page = 0; ; page += 1) {
+		const from = page * CULTURE_PROMPTS_PAGE_SIZE;
+		const to = from + CULTURE_PROMPTS_PAGE_SIZE - 1;
+		const { data, error } = await supabase
+			.from("culture_prompts")
+			.select("id,culture_items!inner(id,category)")
+			.eq("is_active", true)
+			.eq("culture_items.is_active", true)
+			.order("sort_order", { ascending: true })
+			.order("id", { ascending: true })
+			.range(from, to);
+
+		if (error) {
+			return { data: prompts, error };
+		}
+
+		const batch = (data ?? []) as CulturePromptSummaryRow[];
+		prompts.push(...batch);
+
+		if (batch.length < CULTURE_PROMPTS_PAGE_SIZE) {
+			return { data: prompts, error: null };
+		}
+	}
+}
+
 export default async function CulturePage() {
 	const supabase = await createClient();
 	const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
@@ -63,12 +92,7 @@ export default async function CulturePage() {
 	}
 
 	const [promptsResult, progressResult] = await Promise.all([
-		supabase
-			.from("culture_prompts")
-			.select("id,culture_items!inner(id,category)")
-			.eq("is_active", true)
-			.eq("culture_items.is_active", true)
-			.order("sort_order", { ascending: true }),
+		fetchCulturePromptSummaries(supabase),
 		supabase
 			.from("culture_progress")
 			.select("prompt_id,mastery_status,last_result,review_count,correct_count,incorrect_count")
