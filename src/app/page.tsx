@@ -68,6 +68,12 @@ export default async function Home() {
 						</article>
 					))}
 				</div>
+
+				<footer className="border-t border-ivory/15 pt-5">
+					<Link href="/confidentialite" className="text-sm font-semibold text-ivory/52 underline-offset-4 transition hover:text-accent hover:underline">
+						Confidentialité
+					</Link>
+				</footer>
 			</section>
 		</main>
 	);
