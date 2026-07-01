@@ -161,62 +161,69 @@ export function CultureSession({ questions }: CultureSessionProps) {
 
 	if (!hasStarted) {
 		return (
-			<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
-				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
-				<h2 className="mt-2 text-2xl font-semibold">Choisir ma session</h2>
-				<p className="mt-4 text-sm leading-6 text-night/68">Sélectionnez le nombre de questions et les univers à réviser pour votre routine du jour.</p>
-
-				<div className="mt-6 grid gap-6">
-					<fieldset>
-						<legend className="text-sm font-semibold text-night">Nombre de questions</legend>
-						<div className="mt-3 grid gap-2 sm:grid-cols-2" aria-label="Nombre de questions">
-							{SESSION_QUESTION_OPTIONS.map((questionCount) => {
-								const isSelected = selectedQuestionCount === questionCount;
-
-								return (
-									<button
-										key={questionCount}
-										type="button"
-										onClick={() => setSelectedQuestionCount(questionCount)}
-										className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
-											isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
-										}`}
-									>
-										{questionCount} questions
-									</button>
-								);
-							})}
-						</div>
-					</fieldset>
-
-					<fieldset>
-						<legend className="text-sm font-semibold text-night">Univers</legend>
-						<div className="mt-3">
-							<CultureUniverseSelector selectedCategories={selectedCategories} onChange={setSelectedCategories} />
-						</div>
-					</fieldset>
+			<>
+				<div className="py-2 sm:py-6">
+					<h1 className="text-3xl font-semibold sm:text-5xl">Session rapide</h1>
+					<p className="mt-4 text-base leading-7 text-ivory/72 sm:mt-5 sm:text-lg sm:leading-8">Une routine courte pour réviser un mélange de questions issues de tous les univers.</p>
 				</div>
 
-				<p className="mt-5 text-sm leading-6 text-night/62">
-					{availableQuestions.length} question{availableQuestions.length > 1 ? "s" : ""} disponible{availableQuestions.length > 1 ? "s" : ""} pour {selectedUniverseLabel.toLocaleLowerCase("fr-FR")}.
-					{isLimitedByAvailableQuestions ? " La session utilisera toutes celles disponibles." : ""}
-				</p>
+				<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
+					<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
+					<h2 className="mt-2 text-2xl font-semibold">Choisir ma session</h2>
+					<p className="mt-4 text-sm leading-6 text-night/68">Sélectionnez le nombre de questions et les univers à réviser pour votre routine du jour.</p>
 
-				{availableQuestions.length === 0 ? (
-					<p role="alert" className="mt-4 rounded-md border border-accent/30 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">
-						Aucune question active n&apos;est disponible pour cette sélection.
+					<div className="mt-6 grid gap-6">
+						<fieldset>
+							<legend className="text-sm font-semibold text-night">Nombre de questions</legend>
+							<div className="mt-3 grid gap-2 sm:grid-cols-2" aria-label="Nombre de questions">
+								{SESSION_QUESTION_OPTIONS.map((questionCount) => {
+									const isSelected = selectedQuestionCount === questionCount;
+
+									return (
+										<button
+											key={questionCount}
+											type="button"
+											onClick={() => setSelectedQuestionCount(questionCount)}
+											className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
+												isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
+											}`}
+										>
+											{questionCount} questions
+										</button>
+									);
+								})}
+							</div>
+						</fieldset>
+
+						<fieldset>
+							<legend className="text-sm font-semibold text-night">Univers</legend>
+							<div className="mt-3">
+								<CultureUniverseSelector selectedCategories={selectedCategories} onChange={setSelectedCategories} />
+							</div>
+						</fieldset>
+					</div>
+
+					<p className="mt-5 text-sm leading-6 text-night/62">
+						{availableQuestions.length} question{availableQuestions.length > 1 ? "s" : ""} disponible{availableQuestions.length > 1 ? "s" : ""} pour {selectedUniverseLabel.toLocaleLowerCase("fr-FR")}.
+						{isLimitedByAvailableQuestions ? " La session utilisera toutes celles disponibles." : ""}
 					</p>
-				) : null}
 
-				<button type="button" onClick={handleStartSession} disabled={availableQuestions.length === 0} className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:bg-night/15 disabled:text-night/42 sm:w-auto">
-					Démarrer la session
-				</button>
-			</section>
+					{availableQuestions.length === 0 ? (
+						<p role="alert" className="mt-4 rounded-md border border-accent/30 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">
+							Aucune question active n&apos;est disponible pour cette sélection.
+						</p>
+					) : null}
+
+					<button type="button" onClick={handleStartSession} disabled={availableQuestions.length === 0} className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:bg-night/15 disabled:text-night/42 sm:w-auto">
+						Démarrer la session
+					</button>
+				</section>
+			</>
 		);
 	}
 
 	return (
-		<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
+		<section className={`rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5 ${currentFeedback ? "pb-24 sm:pb-5" : ""}`}>
 			<div className="flex flex-col gap-3 border-b border-night/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
 				<div>
 					<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">
@@ -270,7 +277,15 @@ export function CultureSession({ questions }: CultureSessionProps) {
 				<div aria-live="polite" className="mt-5 rounded-md border border-night/10 bg-night/[0.03] p-4">
 					<p className="text-base font-semibold">{currentFeedback.isCorrect ? "Bonne réponse." : "Mauvaise réponse."}</p>
 					{currentFeedback.isCorrect ? null : <p className="mt-2 text-sm leading-6 text-night/68">Bonne réponse : {currentFeedback.correctAnswer}</p>}
-					<button type="button" onClick={handleNextStep} className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
+					<button type="button" onClick={handleNextStep} className="mt-5 hidden h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:inline-flex sm:w-auto">
+						{isLastQuestion ? "Voir le bilan" : "Question suivante"}
+					</button>
+				</div>
+			) : null}
+
+			{currentFeedback ? (
+				<div className="fixed inset-x-0 bottom-0 z-30 border-t border-night/10 bg-ivory/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_rgba(14,25,42,0.16)] backdrop-blur sm:hidden">
+					<button type="button" onClick={handleNextStep} className="inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]">
 						{isLastQuestion ? "Voir le bilan" : "Question suivante"}
 					</button>
 				</div>
