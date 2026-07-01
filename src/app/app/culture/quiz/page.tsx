@@ -119,8 +119,8 @@ export default async function CultureQuizPage() {
 
 	return (
 		<main className="min-h-screen bg-night px-4 py-6 text-ivory sm:px-10 sm:py-8 lg:px-16">
-			<section className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-3xl flex-col gap-8 sm:min-h-[calc(100vh-4rem)] sm:gap-10">
-				<header className="flex flex-col gap-4 border-b border-ivory/15 pb-5 sm:flex-row sm:items-center sm:justify-between">
+			<section className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-3xl flex-col gap-5 sm:min-h-[calc(100vh-4rem)] sm:gap-10">
+				<header className="flex flex-col gap-3 border-b border-ivory/15 pb-4 sm:flex-row sm:items-center sm:justify-between sm:pb-5">
 					<div>
 						<BrandMark href="/app" />
 						<p className="mt-2 text-sm text-ivory/58">
@@ -130,15 +130,10 @@ export default async function CultureQuizPage() {
 							/ Quiz oral
 						</p>
 					</div>
-					<Link href="/app/culture" className="inline-flex h-11 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:w-auto">
+					<Link href="/app/culture" className="inline-flex h-10 w-full items-center justify-center rounded-md border border-ivory/25 px-4 text-sm font-semibold text-ivory transition hover:border-accent hover:text-accent sm:h-11 sm:w-auto">
 						Retour Culture
 					</Link>
 				</header>
-
-				<div className="py-2 sm:py-6">
-					<h1 className="text-3xl font-semibold sm:text-5xl">Quiz oral</h1>
-					<p className="mt-5 text-base leading-7 text-ivory/72 sm:text-lg sm:leading-8">Un quiz de culture générale à jouer seul ou entre amis.</p>
-				</div>
 
 				{promptsError ? (
 					<p role="alert" className="rounded-md border border-accent/35 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">

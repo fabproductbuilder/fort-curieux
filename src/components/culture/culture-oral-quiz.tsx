@@ -110,7 +110,7 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 		const isLastQuestion = currentIndex === sessionQuestions.length - 1;
 
 		return (
-			<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
+			<section className={`rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5 ${isAnswerVisible ? "pb-24 sm:pb-5" : ""}`}>
 				<div className="flex flex-col gap-3 border-b border-night/10 pb-4 sm:flex-row sm:items-start sm:justify-between">
 					<div>
 						<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">
@@ -128,7 +128,7 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 					<div aria-live="polite" className="mt-6 rounded-md border border-night/10 bg-night/[0.03] p-4">
 						<p className="text-xs font-semibold uppercase tracking-[0.16em] text-night/44">Réponse à lire à voix haute.</p>
 						<p className="mt-3 text-2xl font-semibold leading-tight">{currentQuestion.answer}</p>
-						<button type="button" onClick={handleNextQuestion} className="mt-5 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:w-auto">
+						<button type="button" onClick={handleNextQuestion} className="mt-5 hidden h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] sm:inline-flex sm:w-auto">
 							{isLastQuestion ? "Voir le bilan" : "Question suivante"}
 						</button>
 					</div>
@@ -137,61 +137,76 @@ export function CultureOralQuiz({ questions }: CultureOralQuizProps) {
 						Voir la réponse
 					</button>
 				)}
+
+				{isAnswerVisible ? (
+					<div className="fixed inset-x-0 bottom-0 z-30 border-t border-night/10 bg-ivory/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_rgba(14,25,42,0.16)] backdrop-blur sm:hidden">
+						<button type="button" onClick={handleNextQuestion} className="inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440]">
+							{isLastQuestion ? "Voir le bilan" : "Question suivante"}
+						</button>
+					</div>
+				) : null}
 			</section>
 		);
 	}
 
 	return (
-		<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
-			<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
-			<h2 className="mt-2 text-2xl font-semibold">Préparer le quiz oral</h2>
-			<p className="mt-4 text-sm leading-6 text-night/68">Choisissez un nombre de questions et un ou plusieurs univers, puis révélez les réponses une par une.</p>
-
-			<div className="mt-6 grid gap-6">
-				<fieldset>
-					<legend className="text-sm font-semibold text-night">Nombre de questions</legend>
-					<div className="mt-3 grid gap-2 sm:grid-cols-3">
-						{QUESTION_AMOUNT_OPTIONS.map((option) => {
-							const isSelected = questionAmount === option.value;
-
-							return (
-								<button
-									key={option.value}
-									type="button"
-									onClick={() => setQuestionAmount(option.value)}
-									className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
-										isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
-									}`}
-								>
-									{option.label}
-								</button>
-							);
-						})}
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<legend className="text-sm font-semibold text-night">Périmètre</legend>
-					<div className="mt-3">
-						<CultureUniverseSelector selectedCategories={selectedCategories} onChange={setSelectedCategories} />
-					</div>
-				</fieldset>
+		<>
+			<div className="py-2 sm:py-6">
+				<h1 className="text-3xl font-semibold sm:text-5xl">Quiz oral</h1>
+				<p className="mt-4 text-base leading-7 text-ivory/72 sm:mt-5 sm:text-lg sm:leading-8">Un quiz de culture générale à jouer seul ou entre amis.</p>
 			</div>
 
-			<p className="mt-5 text-sm leading-6 text-night/62">
-				{availableQuestions.length} question{availableQuestions.length > 1 ? "s" : ""} disponible{availableQuestions.length > 1 ? "s" : ""} pour ce périmètre.
-				{isLimitedByAvailableQuestions ? " Le quiz utilisera toutes celles disponibles." : ""}
-			</p>
+			<section className="rounded-lg border border-ivory/20 bg-ivory p-4 text-night sm:p-5">
+				<p className="text-sm font-semibold uppercase tracking-[0.18em] text-night/44">Configuration</p>
+				<h2 className="mt-2 text-2xl font-semibold">Préparer le quiz oral</h2>
+				<p className="mt-4 text-sm leading-6 text-night/68">Choisissez un nombre de questions et un ou plusieurs univers, puis révélez les réponses une par une.</p>
 
-			{availableQuestions.length === 0 ? (
-				<p role="alert" className="mt-4 rounded-md border border-accent/30 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">
-					Aucune question active n&apos;est disponible pour ce périmètre.
+				<div className="mt-6 grid gap-6">
+					<fieldset>
+						<legend className="text-sm font-semibold text-night">Nombre de questions</legend>
+						<div className="mt-3 grid gap-2 sm:grid-cols-3">
+							{QUESTION_AMOUNT_OPTIONS.map((option) => {
+								const isSelected = questionAmount === option.value;
+
+								return (
+									<button
+										key={option.value}
+										type="button"
+										onClick={() => setQuestionAmount(option.value)}
+										className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition ${
+											isSelected ? "border-accent bg-[#fff4ed] text-night" : "border-night/12 bg-white text-night/70 hover:border-accent hover:text-night"
+										}`}
+									>
+										{option.label}
+									</button>
+								);
+							})}
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<legend className="text-sm font-semibold text-night">Périmètre</legend>
+						<div className="mt-3">
+							<CultureUniverseSelector selectedCategories={selectedCategories} onChange={setSelectedCategories} />
+						</div>
+					</fieldset>
+				</div>
+
+				<p className="mt-5 text-sm leading-6 text-night/62">
+					{availableQuestions.length} question{availableQuestions.length > 1 ? "s" : ""} disponible{availableQuestions.length > 1 ? "s" : ""} pour ce périmètre.
+					{isLimitedByAvailableQuestions ? " Le quiz utilisera toutes celles disponibles." : ""}
 				</p>
-			) : null}
 
-			<button type="button" onClick={handleStartQuiz} disabled={availableQuestions.length === 0} className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:bg-night/15 disabled:text-night/42 sm:w-auto">
-				Démarrer le quiz
-			</button>
-		</section>
+				{availableQuestions.length === 0 ? (
+					<p role="alert" className="mt-4 rounded-md border border-accent/30 bg-[#fff4ed] px-4 py-3 text-sm leading-6 text-[#7a2e12]">
+						Aucune question active n&apos;est disponible pour ce périmètre.
+					</p>
+				) : null}
+
+				<button type="button" onClick={handleStartQuiz} disabled={availableQuestions.length === 0} className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-night transition hover:bg-[#dc8440] disabled:cursor-not-allowed disabled:bg-night/15 disabled:text-night/42 sm:w-auto">
+					Démarrer le quiz
+				</button>
+			</section>
+		</>
 	);
 }
